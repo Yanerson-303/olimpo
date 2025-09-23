@@ -1,0 +1,333 @@
+ç<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spartan UI 3D</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background: #fff;
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Cinzel", serif;
+      display: flex;
+      flex-direction: column;
+    }
+    #spartan-canvas canvas {
+      max-width: 90vw;
+      max-height: 60vh;
+      border: 2px solid #000;
+      border-radius: 10px;
+    }
+    /* Botones estilo oro líquido */
+    .btn-gold {
+      background: linear-gradient(45deg, #cfa642, #f7e27e, #b8860b);
+      border: none;
+      color: #2c1c00;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(207,166,66,0.8);
+      transition: transform 0.2s ease;
+      flex: 1;
+    }
+    .btn-gold:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(247,226,126,1);
+    }
+    /* Chat */
+    #chat-box {
+      background: rgba(0,0,0,0.7);
+      color: #f7e27e;
+      font-size: 0.9rem;
+      height: 150px;
+      overflow-y: auto;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    /* Skills */
+    #skills {
+      background: rgba(0,0,0,0.7);
+      color: #f7e27e;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+    /* Barra misiones */
+    #missions-bar {
+      background: rgba(0,0,0,0.85);
+      color: #f7e27e;
+      padding: 8px;
+      text-align: center;
+      border-radius: 15px 15px 0 0;
+      cursor: pointer;
+    }
+    #missions-menu {
+      display: none;
+      background: rgba(0,0,0,0.9);
+      color: #f7e27e;
+      padding: 10px;
+      border-radius: 0 0 15px 15px;
+    }
+    /* Preloader */
+    #preloader {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:#fff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+      transition: opacity 2s ease;
+    }
+    #preloader img {
+      width:120px;
+      animation: fadein 2s ease;
+    }
+    @keyframes fadein {
+      from {opacity:0;}
+      to {opacity:1;}
+    }
+    /* --- Responsive para móviles --- */
+    @media (max-width: 768px) {
+      /* barra fija abajo */
+      #spartan-buttons {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: flex !important;
+        justify-content: space-around;
+        background: rgba(0,0,0,0.9);
+        padding: 8px;
+        border-radius: 12px 12px 0 0;
+        z-index: 1000;
+      }
+      /* misiones y skills encima de la barra */
+      #missions-bar, #missions-menu, #skills {
+        position: fixed;
+        bottom: 60px;
+        left: 0;
+        width: 100%;
+        z-index: 900;
+      }
+      #skills {
+        bottom: 150px;
+        margin: 0 10px;
+      }
+      #chat-box {
+        display: none; /* opcional en móvil para no saturar */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Preloader con logo -->
+  <div id="preloader">
+    <img src="../data/log/dreamina.png" alt="Logo">
+  </div>
+
+  <!-- Superior -->
+  <div class="d-flex justify-content-between align-items-center p-3">
+    <button class="btn btn-dark"><i class="bi bi-gear-fill"></i></button>
+    <div class="text-end fw-bold text-dark">⚔️ Rango: Hoplita</div>
+  </div>
+
+  <!-- Centro -->
+  <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+    <div id="spartan-canvas"></div>
+    <div id="spartan-buttons" class="d-none mt-4 gap-3">
+      <button class="btn-gold">Batalla</button>
+      <button class="btn-gold">Entrenamiento</button>
+      <button class="btn-gold">Forja</button>
+    </div>
+  </div>
+
+  <!-- Inferior desktop -->
+  <div class="container-fluid mb-2 d-none d-md-block">
+    <div class="row">
+      <div class="col-6 col-md-3">
+        <div id="chat-box">
+          <p><b>Leonidas:</b> ¡Molon labe!</p>
+          <p><b>Guerrero:</b> Preparado para la batalla.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-6"></div>
+      <div class="col-6 col-md-3">
+        <div id="skills">
+          <p><b>Fuerza:</b> 80</p>
+          <p><b>Defensa:</b> 65</p>
+          <p><b>Estrategia:</b> 90</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra misiones -->
+  <div class="text-center">
+    <div id="missions-bar">📜 Misiones</div>
+    <div id="missions-menu">
+      <p>Misión 1: Defender Termópilas</p>
+      <p>Misión 2: Forjar nueva lanza</p>
+      <p>Misión 3: Entrenar tropas</p>
+    </div>
+  </div>
+
+  <script>
+    async function loadOBJ(url) {
+      const response = await fetch(url);
+      const text = await response.text();
+      const lines = text.split("\n");
+      const positions = [];
+      const vertices = [];
+      const normals = [];
+
+      for (let line of lines) {
+        line = line.trim();
+        if (line.startsWith("v ")) {
+          const [, x, y, z] = line.split(/\s+/);
+          positions.push([parseFloat(x), parseFloat(y), parseFloat(z)]);
+        } else if (line.startsWith("f ")) {
+          const [, ...faces] = line.split(/\s+/);
+          const faceVerts = [];
+          for (let f of faces) {
+            const [v] = f.split("/");
+            const pos = positions[parseInt(v) - 1];
+            faceVerts.push(pos);
+            vertices.push(...pos);
+          }
+          const U = [
+            faceVerts[1][0] - faceVerts[0][0],
+            faceVerts[1][1] - faceVerts[0][1],
+            faceVerts[1][2] - faceVerts[0][2]
+          ];
+          const V = [
+            faceVerts[2][0] - faceVerts[0][0],
+            faceVerts[2][1] - faceVerts[0][1],
+            faceVerts[2][2] - faceVerts[0][2]
+          ];
+          const N = [
+            U[1]*V[2]-U[2]*V[1],
+            U[2]*V[0]-U[0]*V[2],
+            U[0]*V[1]-U[1]*V[0]
+          ];
+          for (let i=0;i<3;i++) normals.push(...N);
+        }
+      }
+      return {vertices:new Float32Array(vertices), normals:new Float32Array(normals)};
+    }
+
+    function initWebGL(model) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 400;
+      canvas.height = 400;
+      document.getElementById("spartan-canvas").appendChild(canvas);
+      const gl = canvas.getContext("webgl");
+
+      if (!gl) {
+        alert("Tu navegador no soporta WebGL");
+        return;
+      }
+
+      const vsSource = `
+        attribute vec3 coordinates;
+        attribute vec3 normal;
+        uniform float angle;
+        varying float vLight;
+        void main(void) {
+          float s = sin(angle);
+          float c = cos(angle);
+          vec3 pos = vec3(
+            c*coordinates.x - s*coordinates.z,
+            coordinates.y,
+            s*coordinates.x + c*coordinates.z
+          );
+          gl_Position = vec4(pos, 1.0);
+          vec3 lightDir = normalize(vec3(0.5, 1.0, 0.8));
+          float light = max(dot(normalize(normal), lightDir), 0.0);
+          vLight = light;
+        }
+      `;
+
+      const fsSource = `
+        precision mediump float;
+        varying float vLight;
+        void main(void) {
+          vec3 color = vec3(0.8, 0.6, 0.2);
+          gl_FragColor = vec4(color * (0.3 + vLight), 1.0);
+        }
+      `;
+
+      function compileShader(src, type) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, src);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error(gl.getShaderInfoLog(shader));
+        }
+        return shader;
+      }
+
+      const vs = compileShader(vsSource, gl.VERTEX_SHADER);
+      const fs = compileShader(fsSource, gl.FRAGMENT_SHADER);
+
+      const shaderProgram = gl.createProgram();
+      gl.attachShader(shaderProgram, vs);
+      gl.attachShader(shaderProgram, fs);
+      gl.linkProgram(shaderProgram);
+      gl.useProgram(shaderProgram);
+
+      const vertexBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, model.vertices, gl.STATIC_DRAW);
+      const coord = gl.getAttribLocation(shaderProgram, "coordinates");
+      gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(coord);
+
+      const normalBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, model.normals, gl.STATIC_DRAW);
+      const norm = gl.getAttribLocation(shaderProgram, "normal");
+      gl.vertexAttribPointer(norm, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(norm);
+
+      const angleLoc = gl.getUniformLocation(shaderProgram, "angle");
+
+      function animate() {
+        gl.clearColor(1.0, 1.0, 1.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        const angle = performance.now() / 2000;
+        gl.uniform1f(angleLoc, angle);
+        gl.drawArrays(gl.TRIANGLES, 0, model.vertices.length / 3);
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      setTimeout(() => {
+        document.getElementById('spartan-buttons').classList.remove('d-none');
+      }, 2000);
+    }
+
+    loadOBJ("../data/models/Spartan.obj").then(model => {
+      initWebGL(model);
+    });
+
+    document.getElementById('missions-bar').addEventListener('click', () => {
+      const menu = document.getElementById('missions-menu');
+      menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+    });
+
+    window.addEventListener("load", () => {
+      const preloader = document.getElementById("preloader");
+      preloader.style.opacity = "0";
+      setTimeout(() => preloader.style.display = "none", 2000);
+    });
+  </script>
+</body>
+</html>
