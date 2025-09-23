@@ -1,352 +1,727 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Spartan UI 3D</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
-      height: 100vh;
-      font-family: "Cinzel", serif;
-      display: flex;
-      flex-direction: column;
-      color: #f7e27e;
-      overflow: hidden;
-    }
-    /* canvas con glow */
-    #spartan-canvas canvas {
-      max-width: 90vw;
-      max-height: 60vh;
-      border: 3px solid #cfa642;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(207,166,66,0.8);
-      animation: fadein 2s ease;
-    }
-    /* Botones estilo fuego forjado */
-    .btn-gold {
-      background: linear-gradient(45deg, #ffb400, #ff6600, #b8860b);
-      border: none;
-      color: #2c1c00;
-      font-weight: bold;
-      text-transform: uppercase;
-      padding: 0.9rem 1.3rem;
-      border-radius: 14px;
-      box-shadow: 0 0 12px rgba(255, 150, 50, 0.8);
-      transition: all 0.3s ease;
-      flex: 1;
-    }
-    .btn-gold:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 25px rgba(255,180,0,1), 0 0 40px rgba(255,100,0,0.7);
-    }
-    /* Chat */
-    #chat-box {
-      background: rgba(0,0,0,0.7);
-      border: 1px solid #cfa642;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 0.9rem;
-      animation: fadein 1.5s ease;
-    }
-    /* Skills */
-    #skills {
-      background: rgba(0,0,0,0.7);
-      border: 1px solid #cfa642;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 0.9rem;
-      animation: fadein 2s ease;
-    }
-    /* Barra misiones */
-    #missions-bar {
-      background: linear-gradient(90deg, #cfa642, #f7e27e, #b8860b);
-      color: #1c1c1c;
-      padding: 10px;
-      font-weight: bold;
-      text-align: center;
-      border-radius: 15px 15px 0 0;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(207,166,66,0.8);
-    }
-    #missions-menu {
-      display: none;
-      background: rgba(0,0,0,0.9);
-      padding: 12px;
-      border-radius: 0 0 15px 15px;
-      animation: fadein 0.8s ease;
-    }
-    #missions-menu p {
-      margin: 5px 0;
-    }
-    /* Preloader */
-    #preloader {
-      position: fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background:#1c1c1c;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      z-index:9999;
-      transition: opacity 1.5s ease;
-    }
-    #preloader img {
-      width:130px;
-      animation: pulse 2s infinite;
-    }
-    @keyframes fadein {
-      from {opacity:0; transform: translateY(10px);}
-      to {opacity:1; transform: translateY(0);}
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); opacity: 0.8; }
-    }
-    /* --- Responsive móviles --- */
-    @media (max-width: 768px) {
-      /* barra fija abajo */
-      #spartan-buttons {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        display: flex !important;
-        justify-content: space-around;
-        background: rgba(0,0,0,0.95);
-        padding: 10px;
-        border-radius: 14px 14px 0 0;
-        z-index: 1000;
-      }
-      /* misiones y skills encima */
-      #missions-bar, #missions-menu, #skills {
-        position: fixed;
-        left: 0;
-        width: 100%;
-        z-index: 900;
-      }
-      #missions-bar {
-        bottom: 60px;
-      }
-      #missions-menu {
-        bottom: 120px;
-      }
-      #skills {
-        bottom: 200px;
-        margin: 0 10px;
-      }
-      #chat-box {
-        display: none; /* oculto en móvil */
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spartan UI 3D - Sistema de Rangos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
+            min-height: 100vh;
+            font-family: "Cinzel", serif;
+            color: #f7e27e;
+            overflow-x: hidden;
+        }
+        
+        .container-main {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Canvas 3D */
+        #spartan-canvas {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        #spartan-canvas canvas {
+            max-width: 90vw;
+            max-height: 50vh;
+            border: 3px solid #cfa642;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(207,166,66,0.8);
+        }
+        
+        /* Botones estilo fuego forjado */
+        .btn-gold {
+            background: linear-gradient(45deg, #ffb400, #ff6600, #b8860b);
+            border: none;
+            color: #2c1c00;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 0.9rem 1.3rem;
+            border-radius: 14px;
+            box-shadow: 0 0 12px rgba(255, 150, 50, 0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gold:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 25px rgba(255,180,0,1), 0 0 40px rgba(255,100,0,0.7);
+        }
+        
+        /* Tarjetas de rango */
+        .ranks-column {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            height: 600px;
+            overflow-y: auto;
+        }
+        
+        .rank-card {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            opacity: 0.3;
+        }
+        
+        .rank-card.active {
+            border-color: #cfa642;
+            box-shadow: 0 0 15px rgba(207,166,66,0.7);
+            transform: scale(1.02);
+            opacity: 1;
+        }
+        
+        .rank-card.unlocked {
+            opacity: 1;
+            border-color: #666;
+        }
+        
+        .rank-card.locked {
+            background: rgba(0,0,0,0.9);
+            border-color: #333;
+        }
+        
+        .rank-card.locked .rank-content {
+            filter: blur(5px);
+            user-select: none;
+        }
+        
+        .rank-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .rank-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .rank-money {
+            font-size: 0.9rem;
+            color: #cfa642;
+            margin-bottom: 10px;
+        }
+        
+        .stats-bar {
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+        
+        .stats-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #cfa642, #f7e27e);
+            border-radius: 5px;
+        }
+        
+        .lock-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: #cfa642;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(0,0,0,0.7);
+        }
+        
+        /* Misiones */
+        .mission-item {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #cfa642;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mission-item:hover {
+            background: rgba(207,166,66,0.2);
+        }
+        
+        .mission-item.completed {
+            opacity: 0.7;
+            text-decoration: line-through;
+        }
+        
+        /* Habilidades */
+        .skills-container {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #cfa642;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        
+        .skill-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .skill-name {
+            width: 120px;
+            font-weight: bold;
+        }
+        
+        .skill-progress {
+            flex-grow: 1;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+        
+        .skill-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #cfa642, #f7e27e);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .skill-value {
+            width: 30px;
+            text-align: right;
+            font-weight: bold;
+        }
+        
+        /* Título del día */
+        .day-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 20px 0;
+            color: #f7e27e;
+            text-shadow: 0 0 10px rgba(207,166,66,0.8);
+        }
+        
+        /* Progreso de desbloqueo */
+        .unlock-progress {
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .unlock-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #cfa642, #f7e27e);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .rank-card {
+                padding: 10px;
+            }
+            
+            .rank-name {
+                font-size: 1.2rem;
+            }
+            
+            .skill-name {
+                width: 100px;
+            }
+            
+            .ranks-column {
+                height: 400px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Preloader con logo -->
-  <div id="preloader">
-    <img src="../data/log/dreamina.png" alt="Logo">
-  </div>
-
-  <!-- Superior -->
-  <div class="d-flex justify-content-between align-items-center p-3">
-    <button class="btn btn-dark"><i class="bi bi-gear-fill"></i></button>
-    <div class="fw-bold">⚔️ Rango: Hoplita</div>
-  </div>
-
-  <!-- Centro -->
-  <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
-    <div id="spartan-canvas"></div>
-    <div id="spartan-buttons" class="d-none mt-4 gap-3">
-      <button class="btn-gold">Batalla</button>
-      <button class="btn-gold">Entrenamiento</button>
-      <button class="btn-gold">Forja</button>
-    </div>
-  </div>
-
-  <!-- Inferior desktop -->
-  <div class="container-fluid mb-2 d-none d-md-block">
-    <div class="row">
-      <div class="col-6 col-md-3">
-        <div id="chat-box">
-          <p><b>Leonidas:</b> ¡Molon labe!</p>
-          <p><b>Guerrero:</b> Preparado para la batalla.</p>
+    <div class="container-main py-4">
+        <div class="text-center mb-4">
+            <h1>Spartan UI 3D - Sistema de Rangos</h1>
+            <div class="day-title" id="day-title">Cargando...</div>
         </div>
-      </div>
-      <div class="col-6 col-md-6"></div>
-      <div class="col-6 col-md-3">
-        <div id="skills">
-          <p><b>Fuerza:</b> 80</p>
-          <p><b>Defensa:</b> 65</p>
-          <p><b>Estrategia:</b> 90</p>
+        
+        <div class="row">
+            <!-- Columna izquierda: Rangos -->
+            <div class="col-md-4">
+                <h3 class="text-center mb-3">Jerarquía de Rangos</h3>
+                <div class="ranks-column">
+                    <div id="ranks-container">
+                        <!-- Los rangos se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Columna central: Canvas 3D y Misiones -->
+            <div class="col-md-4">
+                <div id="spartan-canvas">
+                    <!-- El canvas 3D se cargará aquí -->
+                </div>
+                
+                <div class="mt-4">
+                    <h3 class="text-center mb-3">Misiones del Día</h3>
+                    <div id="missions-container">
+                        <!-- Las misiones se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Columna derecha: Habilidades y Estadísticas -->
+            <div class="col-md-4">
+                <div class="skills-container mb-4">
+                    <h3 class="text-center mb-3">Habilidades Diarias</h3>
+                    <div id="skills-container">
+                        <!-- Las habilidades se cargarán dinámicamente -->
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Progreso al siguiente rango:</span>
+                            <span id="next-rank-progress">0%</span>
+                        </div>
+                        <div class="unlock-progress">
+                            <div id="unlock-fill" class="unlock-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button class="btn-gold mb-3" id="save-btn">Guardar Progreso</button>
+                    <button class="btn-gold" id="reset-day-btn">Reiniciar Día</button>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-center">Estadísticas</h4>
+                    <div id="stats-container">
+                        <!-- Las estadísticas se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Barra misiones -->
-  <div class="text-center">
-    <div id="missions-bar">📜 Misiones</div>
-    <div id="missions-menu">
-      <p>Misión 1: Defender Termópilas</p>
-      <p>Misión 2: Forjar nueva lanza</p>
-      <p>Misión 3: Entrenar tropas</p>
-    </div>
-  </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sistema de datos del juego
+        const gameData = {
+            // Rangos basados en el documento
+            ranks: [
+                { id: 1, name: "SIMP ☹", icon: "☹", money: "$0 - $500K COP", 
+                  status: "Usado, sin respeto", skills: "obediencia, sumisión", 
+                  weakness: "no tiene criterio propio", 
+                  stats: { poder: 1, inteligencia: 1, influencia: 0, respeto: 0, dinero: 1 },
+                  unlockPoints: 0 },
+                
+                { id: 2, name: "OMEGA / GAMMA ▽", icon: "▽", money: "$500K - $1M COP", 
+                  status: "Invisible, base de la pirámide", skills: "sobrevivir, adaptarse", 
+                  weakness: "irrelevante socialmente", 
+                  stats: { poder: 2, inteligencia: 3, influencia: 1, respeto: 1, dinero: 2 },
+                  unlockPoints: 5 },
+                
+                { id: 3, name: "BETA ▬", icon: "▬", money: "$1M - $2M COP", 
+                  status: "Conformista, líder en casa", skills: "organización, trabajo estable", 
+                  weakness: "miedo al riesgo", 
+                  stats: { poder: 4, inteligencia: 5, influencia: 4, respeto: 4, dinero: 4 },
+                  unlockPoints: 10 },
+                
+                { id: 4, name: "DELTA ▼", icon: "▼", money: "$2M - $4M COP", 
+                  status: "Alfa caído, conserva respeto parcial", skills: "experiencia, resiliencia", 
+                  weakness: "nostalgia, no avanza", 
+                  stats: { poder: 6, inteligencia: 6, influencia: 5, respeto: 5, dinero: 5 },
+                  unlockPoints: 20 },
+                
+                { id: 5, name: "ALFA ♛", icon: "♛", money: "$5M - $10M COP", 
+                  status: "Líder nato", skills: "liderazgo, carisma, control", 
+                  weakness: "siempre retado", 
+                  stats: { poder: 8, inteligencia: 7, influencia: 8, respeto: 9, dinero: 7 },
+                  unlockPoints: 30 },
+                
+                { id: 6, name: "ENIGMA ★", icon: "★", money: "Ilimitado", 
+                  status: "Creador de realidades", skills: "innovación, visión global", 
+                  weakness: "incomprendido, visto como loco", 
+                  stats: { poder: 10, inteligencia: 10, influencia: 10, respeto: 9, dinero: 10 },
+                  unlockPoints: 40 },
+                
+                { id: 7, name: "SIGMA ◇", icon: "◇", money: "Variable", 
+                  status: "Fuera de la pirámide", skills: "independencia, estrategia, autosuficiencia", 
+                  weakness: "soledad, desconexión social", 
+                  stats: { poder: 7, inteligencia: 9, influencia: 5, respeto: 6, dinero: 0 },
+                  unlockPoints: 50 }
+            ],
+            
+            // Habilidades diarias (comienzan en 0 cada día)
+            skills: {
+                poder: 0,
+                inteligencia: 0,
+                influencia: 0,
+                respeto: 0,
+                dinero: 0
+            },
+            
+            // Misiones diarias (se renuevan cada día a las 5 AM Colombia)
+            missions: [
+                { id: 1, name: "Ejercicio físico 30 min", skill: "poder", points: 2, completed: false },
+                { id: 2, name: "Lectura educativa 20 min", skill: "inteligencia", points: 2, completed: false },
+                { id: 3, name: "Interacción social positiva", skill: "influencia", points: 2, completed: false },
+                { id: 4, name: "Ayudar a alguien sin esperar nada", skill: "respeto", points: 2, completed: false },
+                { id: 5, name: "Planificación financiera", skill: "dinero", points: 2, completed: false },
+                { id: 6, name: "Meditación 10 min", skill: "poder", points: 1, completed: false },
+                { id: 7, name: "Aprender algo nuevo", skill: "inteligencia", points: 1, completed: false },
+                { id: 8, name: "Networking profesional", skill: "influencia", points: 1, completed: false }
+            ],
+            
+            // Estadísticas del jugador
+            stats: {
+                currentRank: 1,
+                unlockedRanks: [1], // Comienza con el primer rango desbloqueado
+                totalPoints: 0,
+                missionsCompleted: 0,
+                lastReset: null
+            }
+        };
 
-  <script>
-    async function loadOBJ(url) {
-      const response = await fetch(url);
-      const text = await response.text();
-      const lines = text.split("\n");
-      const positions = [];
-      const vertices = [];
-      const normals = [];
+        // Inicialización del juego
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameData();
+            updateDayTitle();
+            renderRanks();
+            renderMissions();
+            renderSkills();
+            renderStats();
+            init3DViewer();
+            setupEventListeners();
+            
+            // Verificar si es un nuevo día (5 AM Colombia)
+            checkDailyReset();
+        });
 
-      for (let line of lines) {
-        line = line.trim();
-        if (line.startsWith("v ")) {
-          const [, x, y, z] = line.split(/\s+/);
-          positions.push([parseFloat(x), parseFloat(y), parseFloat(z)]);
-        } else if (line.startsWith("f ")) {
-          const [, ...faces] = line.split(/\s+/);
-          const faceVerts = [];
-          for (let f of faces) {
-            const [v] = f.split("/");
-            const pos = positions[parseInt(v) - 1];
-            faceVerts.push(pos);
-            vertices.push(...pos);
-          }
-          const U = [
-            faceVerts[1][0] - faceVerts[0][0],
-            faceVerts[1][1] - faceVerts[0][1],
-            faceVerts[1][2] - faceVerts[0][2]
-          ];
-          const V = [
-            faceVerts[2][0] - faceVerts[0][0],
-            faceVerts[2][1] - faceVerts[0][1],
-            faceVerts[2][2] - faceVerts[0][2]
-          ];
-          const N = [
-            U[1]*V[2]-U[2]*V[1],
-            U[2]*V[0]-U[0]*V[2],
-            U[0]*V[1]-U[1]*V[0]
-          ];
-          for (let i=0;i<3;i++) normals.push(...N);
+        // Cargar datos del juego desde localStorage
+        function loadGameData() {
+            const savedData = localStorage.getItem('spartanRanksGame');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                
+                // Solo cargar datos si no es un nuevo día
+                if (!isNewDay(parsedData.stats.lastReset)) {
+                    Object.assign(gameData.skills, parsedData.skills);
+                    gameData.missions = parsedData.missions;
+                    gameData.stats = parsedData.stats;
+                }
+            }
         }
-      }
-      return {vertices:new Float32Array(vertices), normals:new Float32Array(normals)};
-    }
 
-    function initWebGL(model) {
-      const canvas = document.createElement("canvas");
-      canvas.width = 420;
-      canvas.height = 420;
-      document.getElementById("spartan-canvas").appendChild(canvas);
-      const gl = canvas.getContext("webgl");
-
-      if (!gl) {
-        alert("Tu navegador no soporta WebGL");
-        return;
-      }
-
-      const vsSource = `
-        attribute vec3 coordinates;
-        attribute vec3 normal;
-        uniform float angle;
-        varying float vLight;
-        void main(void) {
-          float s = sin(angle);
-          float c = cos(angle);
-          vec3 pos = vec3(
-            c*coordinates.x - s*coordinates.z,
-            coordinates.y,
-            s*coordinates.x + c*coordinates.z
-          );
-          gl_Position = vec4(pos, 1.0);
-          vec3 lightDir = normalize(vec3(0.5, 1.0, 0.8));
-          float light = max(dot(normalize(normal), lightDir), 0.0);
-          vLight = light;
+        // Guardar datos del juego en localStorage
+        function saveGameData() {
+            gameData.stats.lastReset = new Date().toISOString();
+            localStorage.setItem('spartanRanksGame', JSON.stringify(gameData));
+            alert('Progreso guardado correctamente');
         }
-      `;
 
-      const fsSource = `
-        precision mediump float;
-        varying float vLight;
-        void main(void) {
-          vec3 color = vec3(0.9, 0.7, 0.2);
-          gl_FragColor = vec4(color * (0.4 + vLight), 1.0);
+        // Verificar si es un nuevo día (después de las 5 AM Colombia)
+        function isNewDay(lastReset) {
+            if (!lastReset) return true;
+            
+            const lastResetDate = new Date(lastReset);
+            const now = new Date();
+            
+            // Ajustar a hora de Colombia (UTC-5)
+            const colombiaOffset = -5 * 60; // UTC-5 en minutos
+            const lastResetColombia = new Date(lastResetDate.getTime() + (lastResetDate.getTimezoneOffset() + colombiaOffset) * 60000);
+            const nowColombia = new Date(now.getTime() + (now.getTimezoneOffset() + colombiaOffset) * 60000);
+            
+            // Verificar si ha pasado las 5 AM del día siguiente
+            if (nowColombia.getDate() !== lastResetColombia.getDate() && nowColombia.getHours() >= 5) {
+                return true;
+            }
+            
+            return false;
         }
-      `;
 
-      function compileShader(src, type) {
-        const shader = gl.createShader(type);
-        gl.shaderSource(shader, src);
-        gl.compileShader(shader);
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-          console.error(gl.getShaderInfoLog(shader));
+        // Reiniciar el día (habilidades a 0, misiones sin completar)
+        function resetDay() {
+            if (confirm('¿Estás seguro de que quieres reiniciar el día? Se perderán todos los progresos no guardados.')) {
+                // Reiniciar habilidades
+                for (let skill in gameData.skills) {
+                    gameData.skills[skill] = 0;
+                }
+                
+                // Reiniciar misiones
+                gameData.missions.forEach(mission => {
+                    mission.completed = false;
+                });
+                
+                // Reiniciar estadísticas del día
+                gameData.stats.missionsCompleted = 0;
+                gameData.stats.totalPoints = 0;
+                
+                renderMissions();
+                renderSkills();
+                renderStats();
+                
+                alert('Día reiniciado. Las habilidades han vuelto a 0.');
+            }
         }
-        return shader;
-      }
 
-      const vs = compileShader(vsSource, gl.VERTEX_SHADER);
-      const fs = compileShader(fsSource, gl.FRAGMENT_SHADER);
+        // Verificar y realizar reset diario automático
+        function checkDailyReset() {
+            if (isNewDay(gameData.stats.lastReset)) {
+                resetDay();
+                updateDayTitle();
+            }
+        }
 
-      const shaderProgram = gl.createProgram();
-      gl.attachShader(shaderProgram, vs);
-      gl.attachShader(shaderProgram, fs);
-      gl.linkProgram(shaderProgram);
-      gl.useProgram(shaderProgram);
+        // Actualizar el título del día
+        function updateDayTitle() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const colombiaTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Bogota' }));
+            document.getElementById('day-title').textContent = colombiaTime.toLocaleDateString('es-CO', options);
+        }
 
-      const vertexBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, model.vertices, gl.STATIC_DRAW);
-      const coord = gl.getAttribLocation(shaderProgram, "coordinates");
-      gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
-      gl.enableVertexAttribArray(coord);
+        // Renderizar los rangos (solo muestra el actual y los desbloqueados)
+        function renderRanks() {
+            const container = document.getElementById('ranks-container');
+            container.innerHTML = '';
+            
+            gameData.ranks.forEach(rank => {
+                const isUnlocked = gameData.stats.unlockedRanks.includes(rank.id);
+                const isActive = rank.id === gameData.stats.currentRank;
+                
+                const rankCard = document.createElement('div');
+                rankCard.className = `rank-card ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : 'locked'}`;
+                rankCard.style.position = 'relative';
+                
+                let statsHTML = '';
+                for (const stat in rank.stats) {
+                    const value = rank.stats[stat];
+                    const percentage = (value / 10) * 100;
+                    statsHTML += `
+                        <div class="d-flex justify-content-between">
+                            <span>${stat.toUpperCase()}:</span>
+                            <span>${value}/10</span>
+                        </div>
+                        <div class="stats-bar">
+                            <div class="stats-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    `;
+                }
+                
+                let rankContent = `
+                    <div class="rank-content">
+                        <div class="rank-icon">${rank.icon}</div>
+                        <div class="rank-name">${rank.name}</div>
+                        <div class="rank-money">${rank.money}</div>
+                        <div class="rank-status">${rank.status}</div>
+                        <div class="mt-2">
+                            ${statsHTML}
+                        </div>
+                    </div>
+                `;
+                
+                // Si el rango está bloqueado, mostrar icono de candado
+                if (!isUnlocked) {
+                    rankContent += `<div class="lock-icon">🔒</div>`;
+                }
+                
+                rankCard.innerHTML = rankContent;
+                container.appendChild(rankCard);
+            });
+            
+            updateUnlockProgress();
+        }
 
-      const normalBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, model.normals, gl.STATIC_DRAW);
-      const norm = gl.getAttribLocation(shaderProgram, "normal");
-      gl.vertexAttribPointer(norm, 3, gl.FLOAT, false, 0, 0);
-      gl.enableVertexAttribArray(norm);
+        // Actualizar la barra de progreso al siguiente rango
+        function updateUnlockProgress() {
+            const currentRank = gameData.stats.currentRank;
+            const nextRank = gameData.ranks.find(r => r.id === currentRank + 1);
+            
+            if (!nextRank) {
+                // Ya está en el rango máximo
+                document.getElementById('next-rank-progress').textContent = 'Máximo';
+                document.getElementById('unlock-fill').style.width = '100%';
+                return;
+            }
+            
+            const currentPoints = gameData.stats.totalPoints;
+            const pointsNeeded = nextRank.unlockPoints;
+            const progressPercentage = Math.min((currentPoints / pointsNeeded) * 100, 100);
+            
+            document.getElementById('next-rank-progress').textContent = `${Math.round(progressPercentage)}%`;
+            document.getElementById('unlock-fill').style.width = `${progressPercentage}%`;
+        }
 
-      const angleLoc = gl.getUniformLocation(shaderProgram, "angle");
+        // Renderizar las misiones
+        function renderMissions() {
+            const container = document.getElementById('missions-container');
+            container.innerHTML = '';
+            
+            gameData.missions.forEach(mission => {
+                const missionElement = document.createElement('div');
+                missionElement.className = `mission-item ${mission.completed ? 'completed' : ''}`;
+                missionElement.innerHTML = `
+                    <div class="d-flex justify-content-between">
+                        <span>${mission.name}</span>
+                        <span>+${mission.points} ${mission.skill}</span>
+                    </div>
+                `;
+                
+                if (!mission.completed) {
+                    missionElement.addEventListener('click', () => completeMission(mission.id));
+                }
+                
+                container.appendChild(missionElement);
+            });
+        }
 
-      function animate() {
-        gl.clearColor(0.1, 0.1, 0.1, 1.0);
-        gl.enable(gl.DEPTH_TEST);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        const angle = performance.now() / 2000;
-        gl.uniform1f(angleLoc, angle);
-        gl.drawArrays(gl.TRIANGLES, 0, model.vertices.length / 3);
-        requestAnimationFrame(animate);
-      }
-      animate();
+        // Completar una misión
+        function completeMission(missionId) {
+            const mission = gameData.missions.find(m => m.id === missionId);
+            if (mission && !mission.completed) {
+                mission.completed = true;
+                gameData.skills[mission.skill] += mission.points;
+                gameData.stats.missionsCompleted++;
+                gameData.stats.totalPoints += mission.points;
+                
+                // Verificar si se debe subir de rango
+                checkRankUp();
+                
+                renderMissions();
+                renderSkills();
+                renderStats();
+            }
+        }
 
-      setTimeout(() => {
-        document.getElementById('spartan-buttons').classList.remove('d-none');
-      }, 2000);
-    }
+        // Verificar si el jugador debe subir de rango
+        function checkRankUp() {
+            const totalPoints = gameData.stats.totalPoints;
+            let newRank = gameData.stats.currentRank;
+            
+            // Verificar si se ha alcanzado el puntaje para un nuevo rango
+            for (let i = gameData.ranks.length - 1; i >= 1; i--) {
+                if (totalPoints >= gameData.ranks[i].unlockPoints && 
+                    !gameData.stats.unlockedRanks.includes(gameData.ranks[i].id)) {
+                    newRank = gameData.ranks[i].id;
+                    gameData.stats.unlockedRanks.push(newRank);
+                    break;
+                }
+            }
+            
+            if (newRank !== gameData.stats.currentRank) {
+                gameData.stats.currentRank = newRank;
+                renderRanks();
+                
+                // Mostrar mensaje de nuevo rango
+                const newRankName = gameData.ranks.find(r => r.id === newRank).name;
+                alert(`¡Felicidades! Has alcanzado el rango: ${newRankName}`);
+            }
+            
+            updateUnlockProgress();
+        }
 
-    loadOBJ("../data/models/Spartan.obj").then(model => {
-      initWebGL(model);
-    });
+        // Renderizar las habilidades
+        function renderSkills() {
+            const container = document.getElementById('skills-container');
+            container.innerHTML = '';
+            
+            for (const skill in gameData.skills) {
+                const value = gameData.skills[skill];
+                const percentage = (value / 20) * 100; // Máximo 20 puntos por día
+                
+                const skillElement = document.createElement('div');
+                skillElement.className = 'skill-bar';
+                skillElement.innerHTML = `
+                    <div class="skill-name">${skill.charAt(0).toUpperCase() + skill.slice(1)}</div>
+                    <div class="skill-progress">
+                        <div class="skill-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="skill-value">${value}</div>
+                `;
+                
+                container.appendChild(skillElement);
+            }
+        }
 
-    document.getElementById('missions-bar').addEventListener('click', () => {
-      const menu = document.getElementById('missions-menu');
-      menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
-    });
+        // Renderizar las estadísticas
+        function renderStats() {
+            const container = document.getElementById('stats-container');
+            const currentRank = gameData.ranks.find(r => r.id === gameData.stats.currentRank);
+            const nextRank = gameData.ranks.find(r => r.id === gameData.stats.currentRank + 1);
+            
+            let nextRankInfo = 'Máximo';
+            if (nextRank) {
+                const pointsNeeded = nextRank.unlockPoints - gameData.stats.totalPoints;
+                nextRankInfo = `${nextRank.name} (${pointsNeeded > 0 ? pointsNeeded + ' puntos' : 'Listo'})`;
+            }
+            
+            container.innerHTML = `
+                <p>Rango actual: <strong>${currentRank.name}</strong></p>
+                <p>Misiones completadas: <strong>${gameData.stats.missionsCompleted}</strong></p>
+                <p>Puntos totales: <strong>${gameData.stats.totalPoints}</strong></p>
+                <p>Próximo rango: <strong>${nextRankInfo}</strong></p>
+                <p>Rangos desbloqueados: <strong>${gameData.stats.unlockedRanks.length}/${gameData.ranks.length}</strong></p>
+            `;
+        }
 
-    window.addEventListener("load", () => {
-      const preloader = document.getElementById("preloader");
-      preloader.style.opacity = "0";
-      setTimeout(() => preloader.style.display = "none", 1500);
-    });
-  </script>
+        // Configurar event listeners
+        function setupEventListeners() {
+            document.getElementById('save-btn').addEventListener('click', saveGameData);
+            document.getElementById('reset-day-btn').addEventListener('click', resetDay);
+        }
+
+        // Inicializar el visor 3D (simulación)
+        function init3DViewer() {
+            const canvasContainer = document.getElementById('spartan-canvas');
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            canvas.style.backgroundColor = '#1a1a1a';
+            canvas.style.borderRadius = '15px';
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Dibujar un objeto 3D simple (simulación)
+            ctx.fillStyle = '#cfa642';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('OBJETO 3D PERSONALIZADO', canvas.width/2, canvas.height/2);
+            ctx.font = '16px Arial';
+            ctx.fillText('(Coloca tu modelo aquí)', canvas.width/2, canvas.height/2 + 30);
+            
+            // Dibujar un cubo simple como representación
+            ctx.strokeStyle = '#f7e27e';
+            ctx.lineWidth = 3;
+            
+            // Cara frontal
+            ctx.beginPath();
+            ctx.rect(150, 150, 100, 100);
+            ctx.stroke();
+            
+            // Cara superior
+            ctx.beginPath();
+            ctx.moveTo(150, 150);
+            ctx.lineTo(130, 130);
+            ctx.lineTo(230, 130);
+            ctx.lineTo(250, 150);
+            ctx.stroke();
+            
+            // Cara lateral
+            ctx.beginPath();
+            ctx.moveTo(250, 150);
+            ctx.lineTo(230, 130);
+            ctx.lineTo(230, 230);
+            ctx.lineTo(250, 250);
+            ctx.stroke();
+            
+            canvasContainer.appendChild(canvas);
+        }
+    </script>
 </body>
 </html>
