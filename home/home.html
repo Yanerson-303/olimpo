@@ -1,4 +1,4 @@
-ç<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -8,91 +8,105 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      background: #fff;
+      background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
       height: 100vh;
-      overflow: hidden;
       font-family: "Cinzel", serif;
       display: flex;
       flex-direction: column;
+      color: #f7e27e;
+      overflow: hidden;
     }
+    /* canvas con glow */
     #spartan-canvas canvas {
       max-width: 90vw;
       max-height: 60vh;
-      border: 2px solid #000;
-      border-radius: 10px;
+      border: 3px solid #cfa642;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(207,166,66,0.8);
+      animation: fadein 2s ease;
     }
-    /* Botones estilo oro líquido */
+    /* Botones estilo fuego forjado */
     .btn-gold {
-      background: linear-gradient(45deg, #cfa642, #f7e27e, #b8860b);
+      background: linear-gradient(45deg, #ffb400, #ff6600, #b8860b);
       border: none;
       color: #2c1c00;
       font-weight: bold;
       text-transform: uppercase;
-      padding: 0.8rem 1.2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(207,166,66,0.8);
-      transition: transform 0.2s ease;
+      padding: 0.9rem 1.3rem;
+      border-radius: 14px;
+      box-shadow: 0 0 12px rgba(255, 150, 50, 0.8);
+      transition: all 0.3s ease;
       flex: 1;
     }
     .btn-gold:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(247,226,126,1);
+      transform: scale(1.08);
+      box-shadow: 0 0 25px rgba(255,180,0,1), 0 0 40px rgba(255,100,0,0.7);
     }
     /* Chat */
     #chat-box {
       background: rgba(0,0,0,0.7);
-      color: #f7e27e;
+      border: 1px solid #cfa642;
+      border-radius: 12px;
+      padding: 12px;
       font-size: 0.9rem;
-      height: 150px;
-      overflow-y: auto;
-      border-radius: 10px;
-      padding: 10px;
+      animation: fadein 1.5s ease;
     }
     /* Skills */
     #skills {
       background: rgba(0,0,0,0.7);
-      color: #f7e27e;
-      border-radius: 10px;
-      padding: 10px;
+      border: 1px solid #cfa642;
+      border-radius: 12px;
+      padding: 12px;
       font-size: 0.9rem;
+      animation: fadein 2s ease;
     }
     /* Barra misiones */
     #missions-bar {
-      background: rgba(0,0,0,0.85);
-      color: #f7e27e;
-      padding: 8px;
+      background: linear-gradient(90deg, #cfa642, #f7e27e, #b8860b);
+      color: #1c1c1c;
+      padding: 10px;
+      font-weight: bold;
       text-align: center;
       border-radius: 15px 15px 0 0;
       cursor: pointer;
+      box-shadow: 0 0 15px rgba(207,166,66,0.8);
     }
     #missions-menu {
       display: none;
       background: rgba(0,0,0,0.9);
-      color: #f7e27e;
-      padding: 10px;
+      padding: 12px;
       border-radius: 0 0 15px 15px;
+      animation: fadein 0.8s ease;
+    }
+    #missions-menu p {
+      margin: 5px 0;
     }
     /* Preloader */
     #preloader {
       position: fixed;
       top:0; left:0;
       width:100%; height:100%;
-      background:#fff;
+      background:#1c1c1c;
       display:flex;
       justify-content:center;
       align-items:center;
       z-index:9999;
-      transition: opacity 2s ease;
+      transition: opacity 1.5s ease;
     }
     #preloader img {
-      width:120px;
-      animation: fadein 2s ease;
+      width:130px;
+      animation: pulse 2s infinite;
     }
     @keyframes fadein {
-      from {opacity:0;}
-      to {opacity:1;}
+      from {opacity:0; transform: translateY(10px);}
+      to {opacity:1; transform: translateY(0);}
     }
-    /* --- Responsive para móviles --- */
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+    /* --- Responsive móviles --- */
     @media (max-width: 768px) {
       /* barra fija abajo */
       #spartan-buttons {
@@ -102,25 +116,30 @@
         width: 100%;
         display: flex !important;
         justify-content: space-around;
-        background: rgba(0,0,0,0.9);
-        padding: 8px;
-        border-radius: 12px 12px 0 0;
+        background: rgba(0,0,0,0.95);
+        padding: 10px;
+        border-radius: 14px 14px 0 0;
         z-index: 1000;
       }
-      /* misiones y skills encima de la barra */
+      /* misiones y skills encima */
       #missions-bar, #missions-menu, #skills {
         position: fixed;
-        bottom: 60px;
         left: 0;
         width: 100%;
         z-index: 900;
       }
+      #missions-bar {
+        bottom: 60px;
+      }
+      #missions-menu {
+        bottom: 120px;
+      }
       #skills {
-        bottom: 150px;
+        bottom: 200px;
         margin: 0 10px;
       }
       #chat-box {
-        display: none; /* opcional en móvil para no saturar */
+        display: none; /* oculto en móvil */
       }
     }
   </style>
@@ -135,7 +154,7 @@
   <!-- Superior -->
   <div class="d-flex justify-content-between align-items-center p-3">
     <button class="btn btn-dark"><i class="bi bi-gear-fill"></i></button>
-    <div class="text-end fw-bold text-dark">⚔️ Rango: Hoplita</div>
+    <div class="fw-bold">⚔️ Rango: Hoplita</div>
   </div>
 
   <!-- Centro -->
@@ -224,8 +243,8 @@
 
     function initWebGL(model) {
       const canvas = document.createElement("canvas");
-      canvas.width = 400;
-      canvas.height = 400;
+      canvas.width = 420;
+      canvas.height = 420;
       document.getElementById("spartan-canvas").appendChild(canvas);
       const gl = canvas.getContext("webgl");
 
@@ -258,8 +277,8 @@
         precision mediump float;
         varying float vLight;
         void main(void) {
-          vec3 color = vec3(0.8, 0.6, 0.2);
-          gl_FragColor = vec4(color * (0.3 + vLight), 1.0);
+          vec3 color = vec3(0.9, 0.7, 0.2);
+          gl_FragColor = vec4(color * (0.4 + vLight), 1.0);
         }
       `;
 
@@ -299,7 +318,7 @@
       const angleLoc = gl.getUniformLocation(shaderProgram, "angle");
 
       function animate() {
-        gl.clearColor(1.0, 1.0, 1.0, 1.0);
+        gl.clearColor(0.1, 0.1, 0.1, 1.0);
         gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         const angle = performance.now() / 2000;
@@ -326,7 +345,7 @@
     window.addEventListener("load", () => {
       const preloader = document.getElementById("preloader");
       preloader.style.opacity = "0";
-      setTimeout(() => preloader.style.display = "none", 2000);
+      setTimeout(() => preloader.style.display = "none", 1500);
     });
   </script>
 </body>
