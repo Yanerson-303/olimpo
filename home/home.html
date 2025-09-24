@@ -1,727 +1,708 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spartan UI 3D - Sistema de Rangos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
-            min-height: 100vh;
-            font-family: "Cinzel", serif;
-            color: #f7e27e;
-            overflow-x: hidden;
-        }
-        
-        .container-main {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        /* Canvas 3D */
-        #spartan-canvas {
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        #spartan-canvas canvas {
-            max-width: 90vw;
-            max-height: 50vh;
-            border: 3px solid #cfa642;
-            border-radius: 15px;
-            box-shadow: 0 0 25px rgba(207,166,66,0.8);
-        }
-        
-        /* Botones estilo fuego forjado */
-        .btn-gold {
-            background: linear-gradient(45deg, #ffb400, #ff6600, #b8860b);
-            border: none;
-            color: #2c1c00;
-            font-weight: bold;
-            text-transform: uppercase;
-            padding: 0.9rem 1.3rem;
-            border-radius: 14px;
-            box-shadow: 0 0 12px rgba(255, 150, 50, 0.8);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-gold:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 25px rgba(255,180,0,1), 0 0 40px rgba(255,100,0,0.7);
-        }
-        
-        /* Tarjetas de rango */
-        .ranks-column {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 15px;
-            height: 600px;
-            overflow-y: auto;
-        }
-        
-        .rank-card {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid #444;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            opacity: 0.3;
-        }
-        
-        .rank-card.active {
-            border-color: #cfa642;
-            box-shadow: 0 0 15px rgba(207,166,66,0.7);
-            transform: scale(1.02);
-            opacity: 1;
-        }
-        
-        .rank-card.unlocked {
-            opacity: 1;
-            border-color: #666;
-        }
-        
-        .rank-card.locked {
-            background: rgba(0,0,0,0.9);
-            border-color: #333;
-        }
-        
-        .rank-card.locked .rank-content {
-            filter: blur(5px);
-            user-select: none;
-        }
-        
-        .rank-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        
-        .rank-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .rank-money {
-            font-size: 0.9rem;
-            color: #cfa642;
-            margin-bottom: 10px;
-        }
-        
-        .stats-bar {
-            height: 10px;
-            background: #333;
-            border-radius: 5px;
-            margin: 5px 0;
-            overflow: hidden;
-        }
-        
-        .stats-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #cfa642, #f7e27e);
-            border-radius: 5px;
-        }
-        
-        .lock-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3rem;
-            color: #cfa642;
-            z-index: 10;
-            text-shadow: 0 0 10px rgba(0,0,0,0.7);
-        }
-        
-        /* Misiones */
-        .mission-item {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid #cfa642;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .mission-item:hover {
-            background: rgba(207,166,66,0.2);
-        }
-        
-        .mission-item.completed {
-            opacity: 0.7;
-            text-decoration: line-through;
-        }
-        
-        /* Habilidades */
-        .skills-container {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid #cfa642;
-            border-radius: 12px;
-            padding: 15px;
-        }
-        
-        .skill-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .skill-name {
-            width: 120px;
-            font-weight: bold;
-        }
-        
-        .skill-progress {
-            flex-grow: 1;
-            height: 20px;
-            background: #333;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 0 10px;
-        }
-        
-        .skill-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #cfa642, #f7e27e);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-        
-        .skill-value {
-            width: 30px;
-            text-align: right;
-            font-weight: bold;
-        }
-        
-        /* Título del día */
-        .day-title {
-            text-align: center;
-            font-size: 1.5rem;
-            margin: 20px 0;
-            color: #f7e27e;
-            text-shadow: 0 0 10px rgba(207,166,66,0.8);
-        }
-        
-        /* Progreso de desbloqueo */
-        .unlock-progress {
-            height: 10px;
-            background: #333;
-            border-radius: 5px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-        
-        .unlock-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #cfa642, #f7e27e);
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .rank-card {
-                padding: 10px;
-            }
-            
-            .rank-name {
-                font-size: 1.2rem;
-            }
-            
-            .skill-name {
-                width: 100px;
-            }
-            
-            .ranks-column {
-                height: 400px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legiones de Roma - Misiones</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Variables CSS para tamaños escalables */
+    :root {
+      --base-size: 0.5vw; /* Reducido para pantallas grandes */
+      --padding-base: calc(var(--base-size) * 2);
+      --font-size-base: calc(var(--base-size) * 1.5);
+      --element-width: calc(var(--base-size) * 15); /* Más pequeño */
+      --element-height: calc(var(--base-size) * 3); /* Más pequeño */
+      
+      /* Colores personalizados */
+      --color-primary: #8B4513; /* Marrón romano */
+      --color-secondary: #D4AF37; /* Dorado */
+      --color-accent: #C0C0C0; /* Plateado */
+      --color-dark: #2F2F2F; /* Fondo oscuro */
+      --color-light: #F5F5DC; /* Beige claro */
+    }
+
+    /* Ajustes para pantallas muy pequeñas */
+    @media (max-width: 768px) {
+      :root {
+        --base-size: 1.5vw;
+      }
+    }
+
+    /* Ajustes para pantallas medianas */
+    @media (min-width: 769px) and (max-width: 1200px) {
+      :root {
+        --base-size: 0.8vw;
+      }
+    }
+
+    /* Ajustes para pantallas muy grandes */
+    @media (min-width: 1600px) {
+      :root {
+        --base-size: 0.4vw;
+      }
+    }
+
+    /* Estilos personalizados con unidades relativas */
+    .fixed-top-right {
+      position: fixed;
+      top: calc(var(--base-size) * 10); /* Más pequeño */
+      right: calc(var(--base-size) * 2);
+      z-index: 1000;
+    }
+
+    .fixed-top-left {
+      position: fixed;
+      top: calc(var(--base-size) * 10); /* Más pequeño */
+      left: calc(var(--base-size) * 2);
+      z-index: 1000;
+    }
+
+    .fixed-top-center {
+      position: fixed;
+      top: calc(var(--base-size) * 10); /* Más pequeño */
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+    }
+
+    .fixed-bottom {
+      position: fixed;
+      bottom: calc(var(--base-size) * 2);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      width: calc(var(--base-size) * 60); /* Más pequeño */
+      max-width: 70%; /* Más pequeño */
+    }
+
+    /* Ajuste para que el contenido no quede oculto por elementos fijos */
+    body {
+      padding-top: calc(var(--base-size) * 15); /* Reducido */
+      padding-bottom: calc(var(--base-size) * 15); /* Reducido */
+      margin: 0;
+      font-size: var(--font-size-base);
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d1b0e 100%);
+      min-height: 100vh;
+      color: var(--color-light);
+      font-family: 'Georgia', serif;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Efecto de textura de pergamino en el fondo */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><rect width="100" height="100" fill="none" stroke="%23D4AF37" stroke-width="2"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23D4AF37" stroke-width="1"/></svg>');
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Efectos de luces ambientales */
+    .light-effect {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.15;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    .light-1 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #D4AF37 0%, transparent 70%);
+      top: 10%;
+      left: 10%;
+      animation: float 15s infinite ease-in-out;
+    }
+    
+    .light-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #8B4513 0%, transparent 70%);
+      bottom: 5%;
+      right: 15%;
+      animation: float 20s infinite ease-in-out reverse;
+    }
+    
+    .light-3 {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, #C0C0C0 0%, transparent 70%);
+      top: 50%;
+      left: 80%;
+      animation: float 12s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(20px, -15px) scale(1.05); }
+      50% { transform: translate(-10px, 10px) scale(0.95); }
+      75% { transform: translate(-15px, -20px) scale(1.02); }
+    }
+
+    /* Botones con tamaño escalable y más pequeños */
+    .btn {
+      font-size: var(--font-size-base);
+      padding: calc(var(--base-size) * 2) calc(var(--base-size) * 2); /* Más pequeño */
+      min-width: var(--element-width);
+      min-height: var(--element-height);
+      border-radius: calc(var(--base-size) * 2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      background: linear-gradient(145deg, #3a2a1a, #2d1b0e);
+      color: var(--color-light);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      color: var(--color-secondary);
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    /* Efecto especial para botones importantes */
+    .btn-warning {
+      background: linear-gradient(145deg, #b8941f, #8a6c0f);
+      color: #2d1b0e;
+      font-weight: bold;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(145deg, #6b4c21, #8B4513);
+      color: var(--color-light);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, #3a3a3a, #2F2F2F);
+      color: var(--color-light);
+    }
+
+    /* Dropdowns con tamaño escalable */
+    .dropdown-menu {
+      font-size: var(--font-size-base);
+      min-width: calc(var(--element-width) * 1.2); /* Más pequeño */
+      background: linear-gradient(145deg, #3a2a1a, #2d1b0e);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+    }
+
+    .dropdown-item {
+      padding: calc(var(--base-size) * 0.3) calc(var(--base-size) * 0.8); /* Más pequeño */
+      color: var(--color-light);
+      transition: all 0.2s ease;
+    }
+    
+    .dropdown-item:hover {
+      background-color: rgba(212, 175, 55, 0.2);
+      color: var(--color-secondary);
+    }
+
+    /* Tarjetas con tamaño escalable */
+    .card {
+      font-size: var(--font-size-base);
+      border-radius: calc(var(--base-size) * 1);
+      background: linear-gradient(145deg, #3a2a1a, #2d1b0e);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      color: var(--color-light);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--color-secondary), transparent);
+    }
+
+    .card-body {
+      padding: calc(var(--base-size) * 1);
+    }
+
+    /* Títulos escalables */
+    h2 {
+      font-size: calc(var(--font-size-base) * 1.3); /* Más pequeño */
+      margin-bottom: calc(var(--base-size) * 0.5);
+      color: var(--color-secondary);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    h3 {
+      font-size: calc(var(--font-size-base) * 1.1); /* Más pequeño */
+      margin-bottom: calc(var(--base-size) * 0.5);
+      color: var(--color-accent);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Progress bars escalables */
+    .progress {
+      height: calc(var(--base-size) * 1.5); /* Más pequeño */
+      margin-bottom: calc(var(--base-size) * 0.5); /* Más pequeño */
+      border-radius: calc(var(--base-size) * 0.5);
+      background-color: #2d1b0e;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      background: linear-gradient(90deg, #8B4513, #D4AF37);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+      transition: width 0.5s ease;
+    }
+
+    /* Badges escalables */
+    .badge {
+      font-size: calc(var(--font-size-base) * 0.7); /* Más pequeño */
+      padding: calc(var(--base-size) * 0.3) calc(var(--base-size) * 0.6);
+      background: linear-gradient(145deg, #8B4513, #6b4c21);
+      color: var(--color-light);
+    }
+
+    /* Navbar escalable */
+    .navbar-brand {
+      font-size: calc(var(--font-size-base) * 1.1); /* Más pequeño */
+      color: var(--color-secondary) !important;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    /* Toast escalable */
+    .toast {
+      font-size: var(--font-size-base);
+      background: linear-gradient(145deg, #3a2a1a, #2d1b0e);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      color: var(--color-light);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Dar espacio entre elementos */
+    section, article, .card, .container {
+      margin-bottom: calc(var(--base-size) * 1); /* Más pequeño */
+    }
+
+    button, input, select, textarea {
+      margin: calc(var(--base-size) * 0.3); /* Más pequeño */
+    }
+
+    /* Contenido central con más espacio */
+    .main-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 60vh;
+      padding: calc(var(--base-size) * 5);
+      position: relative;
+    }
+
+    /* Imagen decorativa central con efectos */
+    .center-image {
+      max-width: 40%;
+      opacity: 0.8;
+      filter: sepia(1) hue-rotate(10deg) brightness(0.9) drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+      transition: all 0.5s ease;
+      animation: pulse 4s infinite ease-in-out;
+    }
+    
+    .center-image:hover {
+      transform: scale(1.05);
+      filter: sepia(0.7) hue-rotate(15deg) brightness(1.1) drop-shadow(0 0 30px rgba(212, 175, 55, 0.7));
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    /* Efectos de sombra más sutiles */
+    .shadow {
+      box-shadow: 0 calc(var(--base-size) * 0.2) calc(var(--base-size) * 0.4) rgba(0,0,0,0.1) !important;
+    }
+    
+    /* Efectos de partículas decorativas */
+    .particle {
+      position: absolute;
+      background: rgba(212, 175, 55, 0.7);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* Efecto de borde romano decorativo */
+    .roman-border {
+      position: relative;
+      padding: 10px;
+    }
+    
+    .roman-border::before, .roman-border::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border: 2px solid var(--color-secondary);
+    }
+    
+    .roman-border::before {
+      top: 0;
+      left: 0;
+      border-right: none;
+      border-bottom: none;
+    }
+    
+    .roman-border::after {
+      bottom: 0;
+      right: 0;
+      border-left: none;
+      border-top: none;
+    }
+  </style>
 </head>
-<body>
-    <div class="container-main py-4">
-        <div class="text-center mb-4">
-            <h1>Spartan UI 3D - Sistema de Rangos</h1>
-            <div class="day-title" id="day-title">Cargando...</div>
-        </div>
-        
-        <div class="row">
-            <!-- Columna izquierda: Rangos -->
-            <div class="col-md-4">
-                <h3 class="text-center mb-3">Jerarquía de Rangos</h3>
-                <div class="ranks-column">
-                    <div id="ranks-container">
-                        <!-- Los rangos se cargarán dinámicamente -->
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Columna central: Canvas 3D y Misiones -->
-            <div class="col-md-4">
-                <div id="spartan-canvas">
-                    <!-- El canvas 3D se cargará aquí -->
-                </div>
-                
-                <div class="mt-4">
-                    <h3 class="text-center mb-3">Misiones del Día</h3>
-                    <div id="missions-container">
-                        <!-- Las misiones se cargarán dinámicamente -->
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Columna derecha: Habilidades y Estadísticas -->
-            <div class="col-md-4">
-                <div class="skills-container mb-4">
-                    <h3 class="text-center mb-3">Habilidades Diarias</h3>
-                    <div id="skills-container">
-                        <!-- Las habilidades se cargarán dinámicamente -->
-                    </div>
-                    
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between">
-                            <span>Progreso al siguiente rango:</span>
-                            <span id="next-rank-progress">0%</span>
-                        </div>
-                        <div class="unlock-progress">
-                            <div id="unlock-fill" class="unlock-fill" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="text-center">
-                    <button class="btn-gold mb-3" id="save-btn">Guardar Progreso</button>
-                    <button class="btn-gold" id="reset-day-btn">Reiniciar Día</button>
-                </div>
-                
-                <div class="mt-4">
-                    <h4 class="text-center">Estadísticas</h4>
-                    <div id="stats-container">
-                        <!-- Las estadísticas se cargarán dinámicamente -->
-                    </div>
-                </div>
-            </div>
-        </div>
+<body class="bg-light">
+
+  <!-- Efectos de luces ambientales -->
+  <div class="light-effect light-1"></div>
+  <div class="light-effect light-2"></div>
+  <div class="light-effect light-3"></div>
+
+  <!-- ====== 🏛️ NAVBAR PRINCIPAL ====== -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top" style="background: linear-gradient(145deg, #2d1b0e, #1a1007) !important;">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-warning" href="#">⚔️ Legiones de Roma</a>
     </div>
+  </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Sistema de datos del juego
-        const gameData = {
-            // Rangos basados en el documento
-            ranks: [
-                { id: 1, name: "SIMP ☹", icon: "☹", money: "$0 - $500K COP", 
-                  status: "Usado, sin respeto", skills: "obediencia, sumisión", 
-                  weakness: "no tiene criterio propio", 
-                  stats: { poder: 1, inteligencia: 1, influencia: 0, respeto: 0, dinero: 1 },
-                  unlockPoints: 0 },
-                
-                { id: 2, name: "OMEGA / GAMMA ▽", icon: "▽", money: "$500K - $1M COP", 
-                  status: "Invisible, base de la pirámide", skills: "sobrevivir, adaptarse", 
-                  weakness: "irrelevante socialmente", 
-                  stats: { poder: 2, inteligencia: 3, influencia: 1, respeto: 1, dinero: 2 },
-                  unlockPoints: 5 },
-                
-                { id: 3, name: "BETA ▬", icon: "▬", money: "$1M - $2M COP", 
-                  status: "Conformista, líder en casa", skills: "organización, trabajo estable", 
-                  weakness: "miedo al riesgo", 
-                  stats: { poder: 4, inteligencia: 5, influencia: 4, respeto: 4, dinero: 4 },
-                  unlockPoints: 10 },
-                
-                { id: 4, name: "DELTA ▼", icon: "▼", money: "$2M - $4M COP", 
-                  status: "Alfa caído, conserva respeto parcial", skills: "experiencia, resiliencia", 
-                  weakness: "nostalgia, no avanza", 
-                  stats: { poder: 6, inteligencia: 6, influencia: 5, respeto: 5, dinero: 5 },
-                  unlockPoints: 20 },
-                
-                { id: 5, name: "ALFA ♛", icon: "♛", money: "$5M - $10M COP", 
-                  status: "Líder nato", skills: "liderazgo, carisma, control", 
-                  weakness: "siempre retado", 
-                  stats: { poder: 8, inteligencia: 7, influencia: 8, respeto: 9, dinero: 7 },
-                  unlockPoints: 30 },
-                
-                { id: 6, name: "ENIGMA ★", icon: "★", money: "Ilimitado", 
-                  status: "Creador de realidades", skills: "innovación, visión global", 
-                  weakness: "incomprendido, visto como loco", 
-                  stats: { poder: 10, inteligencia: 10, influencia: 10, respeto: 9, dinero: 10 },
-                  unlockPoints: 40 },
-                
-                { id: 7, name: "SIGMA ◇", icon: "◇", money: "Variable", 
-                  status: "Fuera de la pirámide", skills: "independencia, estrategia, autosuficiencia", 
-                  weakness: "soledad, desconexión social", 
-                  stats: { poder: 7, inteligencia: 9, influencia: 5, respeto: 6, dinero: 0 },
-                  unlockPoints: 50 }
-            ],
-            
-            // Habilidades diarias (comienzan en 0 cada día)
-            skills: {
-                poder: 0,
-                inteligencia: 0,
-                influencia: 0,
-                respeto: 0,
-                dinero: 0
-            },
-            
-            // Misiones diarias (se renuevan cada día a las 5 AM Colombia)
-            missions: [
-                { id: 1, name: "Ejercicio físico 30 min", skill: "poder", points: 2, completed: false },
-                { id: 2, name: "Lectura educativa 20 min", skill: "inteligencia", points: 2, completed: false },
-                { id: 3, name: "Interacción social positiva", skill: "influencia", points: 2, completed: false },
-                { id: 4, name: "Ayudar a alguien sin esperar nada", skill: "respeto", points: 2, completed: false },
-                { id: 5, name: "Planificación financiera", skill: "dinero", points: 2, completed: false },
-                { id: 6, name: "Meditación 10 min", skill: "poder", points: 1, completed: false },
-                { id: 7, name: "Aprender algo nuevo", skill: "inteligencia", points: 1, completed: false },
-                { id: 8, name: "Networking profesional", skill: "influencia", points: 1, completed: false }
-            ],
-            
-            // Estadísticas del jugador
-            stats: {
-                currentRank: 1,
-                unlockedRanks: [1], // Comienza con el primer rango desbloqueado
-                totalPoints: 0,
-                missionsCompleted: 0,
-                lastReset: null
-            }
-        };
+  <!-- ====== ⚙️ CONFIGURACIONES (Superior Izquierda) ====== -->
+  <div class="fixed-top-left">
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        ⚙️ Configuraciones
+      </button>
+      <ul class="dropdown-menu">
+        <li><button class="dropdown-item" onclick="guardar()">💾 Guardar Progreso</button></li>
+        <li><button class="dropdown-item" onclick="exportar()">📤 Exportar JSON</button></li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <label class="dropdown-item">
+            📥 Importar JSON
+            <input type="file" class="d-none" id="importar" onchange="importar(event)">
+          </label>
+        </li>
+        <li><button class="dropdown-item text-danger" onclick="reiniciar()">🔄 Reiniciar</button></li>
+      </ul>
+    </div>
+  </div>
 
-        // Inicialización del juego
-        document.addEventListener('DOMContentLoaded', function() {
-            loadGameData();
-            updateDayTitle();
-            renderRanks();
-            renderMissions();
-            renderSkills();
-            renderStats();
-            init3DViewer();
-            setupEventListeners();
-            
-            // Verificar si es un nuevo día (5 AM Colombia)
-            checkDailyReset();
+  <!-- ====== 📜 MISIONES (Superior Derecha) ====== -->
+  <div class="fixed-top-right">
+    <div class="dropdown">
+      <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        📜 Misiones
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button class="dropdown-item" data-skill="poder" data-points="2">💪 Entrenar 30 min</button></li>
+        <li><button class="dropdown-item" data-skill="inteligencia" data-points="2">📚 Leer 20 min</button></li>
+        <li><button class="dropdown-item" data-skill="influencia" data-points="1">🗣️ Hablar con alguien nuevo</button></li>
+        <li><button class="dropdown-item" data-skill="respeto" data-points="2">🤝 Ayudar a alguien</button></li>
+        <li><button class="dropdown-item" data-skill="dinero" data-points="3">💰 Ahorrar $10.000</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ====== ⚒️ HABILIDADES (Centro Superior) ====== -->
+  <div class="fixed-top-center">
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        ⚒️ Habilidades
+      </button>
+      <div class="dropdown-menu p-2" style="min-width: calc(var(--element-width) * 1.5);">
+        <div id="skills-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 🏛️ JERARQUÍA (Parte Inferior) ====== -->
+  <div class="fixed-bottom">
+    <div class="card shadow text-center roman-border">
+      <div class="card-body">
+        <h2 class="text-success">🏛️ Jerarquía</h2>
+        <h3 id="rango" class="fw-bold text-danger">SIMP ☹</h3>
+        <p id="descripcion">Usado, sin respeto.</p>
+        <button onclick="activarSigma()" class="btn btn-outline-warning">Elegir Camino SIGMA ◇</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 🏛️ CONTENIDO CENTRAL ====== -->
+  <div class="main-content">
+    <img src="../data/log/dreamina.png" 
+         alt="Escudo Romano" class="center-image">
+  </div>
+
+  <!-- ====== 🔔 TOASTS ====== -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toast" class="toast align-items-center text-bg-dark border-0" role="alert">
+      <div class="d-flex">
+        <div id="toast-body" class="toast-body"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  /* ====== ⚙️ VARIABLES GLOBALES ====== */
+  let skills = {poder:0, inteligencia:0, influencia:0, respeto:0, dinero:0};
+  let niveles = {poder:1, inteligencia:1, influencia:1, respeto:1, dinero:1};
+  let sigma = false;
+
+  /* ====== 📜 CLIC EN MISIONES ====== */
+  document.addEventListener('DOMContentLoaded', function() {
+    // Asignar eventos a los botones de misiones
+    document.querySelectorAll('.dropdown-item[data-skill]').forEach(m => {
+      m.addEventListener('click', () => {
+        if (!m.classList.contains('disabled')) {
+          let skill = m.dataset.skill;
+          let points = parseInt(m.dataset.points);
+          
+          skills[skill] += points;
+          
+          if (skills[skill] >= 10) {
+            skills[skill] = 0;
+            niveles[skill]++;
+            showToast("🎖️ ¡Has subido de nivel en " + skill + "!");
+            createParticles(50);
+          }
+          
+          m.classList.add('disabled', 'text-success');
+          render();
+        }
+      });
+    });
+    
+    // Crear partículas decorativas
+    createParticles(30);
+  });
+
+  /* ====== 🏛️ RANGO SEGÚN PROGRESO ====== */
+  function calcularRango() {
+    if (sigma) return {titulo: "SIGMA ◇", desc: "Independiente, fuera del sistema."};
+    
+    let {poder, inteligencia, influencia, respeto, dinero} = skills;
+    
+    if (poder >= 10 && inteligencia >= 10 && influencia >= 10 && respeto >= 9 && dinero >= 10) 
+      return {titulo: "ENIGMA ★", desc: "Creador de realidades."};
+    if (poder >= 8 && inteligencia >= 7 && influencia >= 8 && respeto >= 9 && dinero >= 7) 
+      return {titulo: "ALFA ♛", desc: "Líder nato, carisma y control."};
+    if (poder >= 6 && inteligencia >= 6 && influencia >= 5 && respeto >= 5 && dinero >= 5) 
+      return {titulo: "DELTA ▼", desc: "Alfa caído, resiliencia y experiencia."};
+    if (poder >= 4 && inteligencia >= 5 && influencia >= 4 && respeto >= 4 && dinero >= 4) 
+      return {titulo: "BETA ▬", desc: "Conformista, líder en casa."};
+    if (poder >= 2 && inteligencia >= 3 && dinero >= 2) 
+      return {titulo: "OMEGA / GAMMA ▽", desc: "Invisible, base de la pirámide."};
+    
+    return {titulo: "SIMP ☹", desc: "Usado, sin respeto."};
+  }
+
+  /* ====== 🎨 ACTUALIZAR INTERFAZ ====== */
+  function render() {
+    // Actualizar habilidades
+    let container = document.getElementById("skills-container");
+    container.innerHTML = "";
+    
+    for (let s in skills) {
+      let div = document.createElement("div");
+      div.className = "mb-1";
+      div.innerHTML = `
+        <label class="form-label text-capitalize">${s} 
+          <span class="badge bg-secondary" id="nivel-${s}">Nv. ${niveles[s]}</span>
+        </label>
+        <div class="progress" style="height: 20px;">
+          <div id="${s}" class="progress-bar bg-warning" role="progressbar" 
+               style="width:${skills[s] * 10}%">${skills[s]}/10</div>
+        </div>`;
+      container.appendChild(div);
+    }
+    
+    // Actualizar rango
+    let rango = calcularRango();
+    document.getElementById("rango").innerText = rango.titulo;
+    document.getElementById("descripcion").innerText = rango.desc;
+  }
+
+  /* ====== 💾 GUARDAR Y RECUPERAR ====== */
+  function guardar() {
+    localStorage.setItem("legionRoma", JSON.stringify({
+      skills, niveles, sigma, fecha: fechaHoy()
+    }));
+    showToast("📜 Progreso guardado!");
+  }
+  
+  function reiniciar() {
+    if (confirm("¿Seguro que quieres reiniciar tu progreso?")) {
+      skills = {poder:0, inteligencia:0, influencia:0, respeto:0, dinero:0};
+      niveles = {poder:1, inteligencia:1, influencia:1, respeto:1, dinero:1};
+      sigma = false;
+      
+      // Restablecer misiones
+      document.querySelectorAll('.dropdown-item[data-skill]').forEach(m => {
+        m.classList.remove('disabled', 'text-success');
+      });
+      
+      render();
+      showToast("🔄 Progreso reiniciado");
+    }
+  }
+  
+  function activarSigma() {
+    sigma = true; 
+    render();
+    showToast("⚡ ¡Has activado el modo SIGMA!");
+    createParticles(100);
+  }
+  
+  function fechaHoy() {
+    return new Date().toISOString().split("T")[0];
+  }
+
+  /* ====== 📂 EXPORTAR/IMPORTAR ====== */
+  function exportar() {
+    let data = JSON.stringify({skills, niveles, sigma});
+    let blob = new Blob([data], {type: "application/json"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "legionesRoma.json";
+    a.click();
+    showToast("📤 Progreso exportado");
+  }
+  
+  function importar(e) {
+    let file = e.target.files[0];
+    if (!file) return;
+    
+    let reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        let data = JSON.parse(ev.target.result);
+        skills = data.skills; 
+        niveles = data.niveles; 
+        sigma = data.sigma;
+        
+        // Actualizar estado de misiones
+        document.querySelectorAll('.dropdown-item[data-skill]').forEach(m => {
+          let skill = m.dataset.skill;
+          if (skills[skill] > 0) {
+            m.classList.add('disabled', 'text-success');
+          } else {
+            m.classList.remove('disabled', 'text-success');
+          }
         });
+        
+        render();
+        showToast("✅ Progreso importado con éxito!");
+      } catch (error) {
+        showToast("❌ Error al importar el archivo");
+      }
+    };
+    reader.readAsText(file);
+  }
 
-        // Cargar datos del juego desde localStorage
-        function loadGameData() {
-            const savedData = localStorage.getItem('spartanRanksGame');
-            if (savedData) {
-                const parsedData = JSON.parse(savedData);
-                
-                // Solo cargar datos si no es un nuevo día
-                if (!isNewDay(parsedData.stats.lastReset)) {
-                    Object.assign(gameData.skills, parsedData.skills);
-                    gameData.missions = parsedData.missions;
-                    gameData.stats = parsedData.stats;
-                }
-            }
-        }
+  /* ====== 🔔 TOASTS ====== */
+  function showToast(msg) {
+    document.getElementById("toast-body").innerText = msg;
+    let toast = new bootstrap.Toast(document.getElementById("toast"));
+    toast.show();
+  }
 
-        // Guardar datos del juego en localStorage
-        function saveGameData() {
-            gameData.stats.lastReset = new Date().toISOString();
-            localStorage.setItem('spartanRanksGame', JSON.stringify(gameData));
-            alert('Progreso guardado correctamente');
-        }
+  /* ====== ✨ EFECTO DE PARTÍCULAS ====== */
+  function createParticles(count) {
+    // Limpiar partículas existentes
+    document.querySelectorAll('.particle').forEach(p => p.remove());
+    
+    for (let i = 0; i < count; i++) {
+      let particle = document.createElement('div');
+      particle.classList.add('particle');
+      
+      // Tamaño aleatorio
+      let size = Math.random() * 5 + 2;
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      
+      // Posición aleatoria
+      particle.style.left = Math.random() * 100 + 'vw';
+      particle.style.top = Math.random() * 100 + 'vh';
+      
+      // Animación
+      let duration = Math.random() * 10 + 5;
+      particle.style.animation = `float ${duration}s infinite ease-in-out`;
+      
+      // Opacidad aleatoria
+      particle.style.opacity = Math.random() * 0.7 + 0.3;
+      
+      document.body.appendChild(particle);
+    }
+  }
 
-        // Verificar si es un nuevo día (después de las 5 AM Colombia)
-        function isNewDay(lastReset) {
-            if (!lastReset) return true;
-            
-            const lastResetDate = new Date(lastReset);
-            const now = new Date();
-            
-            // Ajustar a hora de Colombia (UTC-5)
-            const colombiaOffset = -5 * 60; // UTC-5 en minutos
-            const lastResetColombia = new Date(lastResetDate.getTime() + (lastResetDate.getTimezoneOffset() + colombiaOffset) * 60000);
-            const nowColombia = new Date(now.getTime() + (now.getTimezoneOffset() + colombiaOffset) * 60000);
-            
-            // Verificar si ha pasado las 5 AM del día siguiente
-            if (nowColombia.getDate() !== lastResetColombia.getDate() && nowColombia.getHours() >= 5) {
-                return true;
-            }
-            
-            return false;
+  /* ====== 🔄 AUTO-CARGA DESDE STORAGE ====== */
+  let saved = localStorage.getItem("legionRoma");
+  if (saved) {
+    let data = JSON.parse(saved);
+    
+    // Si la fecha es diferente, restablecer misiones
+    if (data.fecha !== fechaHoy()) {
+      document.querySelectorAll('.dropdown-item[data-skill]').forEach(m => {
+        m.classList.remove('disabled', 'text-success');
+      });
+    } else {
+      skills = data.skills; 
+      niveles = data.niveles; 
+      sigma = data.sigma;
+      
+      // Marcar misiones completadas
+      document.querySelectorAll('.dropdown-item[data-skill]').forEach(m => {
+        let skill = m.dataset.skill;
+        if (skills[skill] > 0) {
+          m.classList.add('disabled', 'text-success');
         }
+      });
+    }
+  }
+  
+  // Renderizar la interfaz
+  render();
+</script>
 
-        // Reiniciar el día (habilidades a 0, misiones sin completar)
-        function resetDay() {
-            if (confirm('¿Estás seguro de que quieres reiniciar el día? Se perderán todos los progresos no guardados.')) {
-                // Reiniciar habilidades
-                for (let skill in gameData.skills) {
-                    gameData.skills[skill] = 0;
-                }
-                
-                // Reiniciar misiones
-                gameData.missions.forEach(mission => {
-                    mission.completed = false;
-                });
-                
-                // Reiniciar estadísticas del día
-                gameData.stats.missionsCompleted = 0;
-                gameData.stats.totalPoints = 0;
-                
-                renderMissions();
-                renderSkills();
-                renderStats();
-                
-                alert('Día reiniciado. Las habilidades han vuelto a 0.');
-            }
-        }
-
-        // Verificar y realizar reset diario automático
-        function checkDailyReset() {
-            if (isNewDay(gameData.stats.lastReset)) {
-                resetDay();
-                updateDayTitle();
-            }
-        }
-
-        // Actualizar el título del día
-        function updateDayTitle() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const colombiaTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Bogota' }));
-            document.getElementById('day-title').textContent = colombiaTime.toLocaleDateString('es-CO', options);
-        }
-
-        // Renderizar los rangos (solo muestra el actual y los desbloqueados)
-        function renderRanks() {
-            const container = document.getElementById('ranks-container');
-            container.innerHTML = '';
-            
-            gameData.ranks.forEach(rank => {
-                const isUnlocked = gameData.stats.unlockedRanks.includes(rank.id);
-                const isActive = rank.id === gameData.stats.currentRank;
-                
-                const rankCard = document.createElement('div');
-                rankCard.className = `rank-card ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : 'locked'}`;
-                rankCard.style.position = 'relative';
-                
-                let statsHTML = '';
-                for (const stat in rank.stats) {
-                    const value = rank.stats[stat];
-                    const percentage = (value / 10) * 100;
-                    statsHTML += `
-                        <div class="d-flex justify-content-between">
-                            <span>${stat.toUpperCase()}:</span>
-                            <span>${value}/10</span>
-                        </div>
-                        <div class="stats-bar">
-                            <div class="stats-fill" style="width: ${percentage}%"></div>
-                        </div>
-                    `;
-                }
-                
-                let rankContent = `
-                    <div class="rank-content">
-                        <div class="rank-icon">${rank.icon}</div>
-                        <div class="rank-name">${rank.name}</div>
-                        <div class="rank-money">${rank.money}</div>
-                        <div class="rank-status">${rank.status}</div>
-                        <div class="mt-2">
-                            ${statsHTML}
-                        </div>
-                    </div>
-                `;
-                
-                // Si el rango está bloqueado, mostrar icono de candado
-                if (!isUnlocked) {
-                    rankContent += `<div class="lock-icon">🔒</div>`;
-                }
-                
-                rankCard.innerHTML = rankContent;
-                container.appendChild(rankCard);
-            });
-            
-            updateUnlockProgress();
-        }
-
-        // Actualizar la barra de progreso al siguiente rango
-        function updateUnlockProgress() {
-            const currentRank = gameData.stats.currentRank;
-            const nextRank = gameData.ranks.find(r => r.id === currentRank + 1);
-            
-            if (!nextRank) {
-                // Ya está en el rango máximo
-                document.getElementById('next-rank-progress').textContent = 'Máximo';
-                document.getElementById('unlock-fill').style.width = '100%';
-                return;
-            }
-            
-            const currentPoints = gameData.stats.totalPoints;
-            const pointsNeeded = nextRank.unlockPoints;
-            const progressPercentage = Math.min((currentPoints / pointsNeeded) * 100, 100);
-            
-            document.getElementById('next-rank-progress').textContent = `${Math.round(progressPercentage)}%`;
-            document.getElementById('unlock-fill').style.width = `${progressPercentage}%`;
-        }
-
-        // Renderizar las misiones
-        function renderMissions() {
-            const container = document.getElementById('missions-container');
-            container.innerHTML = '';
-            
-            gameData.missions.forEach(mission => {
-                const missionElement = document.createElement('div');
-                missionElement.className = `mission-item ${mission.completed ? 'completed' : ''}`;
-                missionElement.innerHTML = `
-                    <div class="d-flex justify-content-between">
-                        <span>${mission.name}</span>
-                        <span>+${mission.points} ${mission.skill}</span>
-                    </div>
-                `;
-                
-                if (!mission.completed) {
-                    missionElement.addEventListener('click', () => completeMission(mission.id));
-                }
-                
-                container.appendChild(missionElement);
-            });
-        }
-
-        // Completar una misión
-        function completeMission(missionId) {
-            const mission = gameData.missions.find(m => m.id === missionId);
-            if (mission && !mission.completed) {
-                mission.completed = true;
-                gameData.skills[mission.skill] += mission.points;
-                gameData.stats.missionsCompleted++;
-                gameData.stats.totalPoints += mission.points;
-                
-                // Verificar si se debe subir de rango
-                checkRankUp();
-                
-                renderMissions();
-                renderSkills();
-                renderStats();
-            }
-        }
-
-        // Verificar si el jugador debe subir de rango
-        function checkRankUp() {
-            const totalPoints = gameData.stats.totalPoints;
-            let newRank = gameData.stats.currentRank;
-            
-            // Verificar si se ha alcanzado el puntaje para un nuevo rango
-            for (let i = gameData.ranks.length - 1; i >= 1; i--) {
-                if (totalPoints >= gameData.ranks[i].unlockPoints && 
-                    !gameData.stats.unlockedRanks.includes(gameData.ranks[i].id)) {
-                    newRank = gameData.ranks[i].id;
-                    gameData.stats.unlockedRanks.push(newRank);
-                    break;
-                }
-            }
-            
-            if (newRank !== gameData.stats.currentRank) {
-                gameData.stats.currentRank = newRank;
-                renderRanks();
-                
-                // Mostrar mensaje de nuevo rango
-                const newRankName = gameData.ranks.find(r => r.id === newRank).name;
-                alert(`¡Felicidades! Has alcanzado el rango: ${newRankName}`);
-            }
-            
-            updateUnlockProgress();
-        }
-
-        // Renderizar las habilidades
-        function renderSkills() {
-            const container = document.getElementById('skills-container');
-            container.innerHTML = '';
-            
-            for (const skill in gameData.skills) {
-                const value = gameData.skills[skill];
-                const percentage = (value / 20) * 100; // Máximo 20 puntos por día
-                
-                const skillElement = document.createElement('div');
-                skillElement.className = 'skill-bar';
-                skillElement.innerHTML = `
-                    <div class="skill-name">${skill.charAt(0).toUpperCase() + skill.slice(1)}</div>
-                    <div class="skill-progress">
-                        <div class="skill-fill" style="width: ${percentage}%"></div>
-                    </div>
-                    <div class="skill-value">${value}</div>
-                `;
-                
-                container.appendChild(skillElement);
-            }
-        }
-
-        // Renderizar las estadísticas
-        function renderStats() {
-            const container = document.getElementById('stats-container');
-            const currentRank = gameData.ranks.find(r => r.id === gameData.stats.currentRank);
-            const nextRank = gameData.ranks.find(r => r.id === gameData.stats.currentRank + 1);
-            
-            let nextRankInfo = 'Máximo';
-            if (nextRank) {
-                const pointsNeeded = nextRank.unlockPoints - gameData.stats.totalPoints;
-                nextRankInfo = `${nextRank.name} (${pointsNeeded > 0 ? pointsNeeded + ' puntos' : 'Listo'})`;
-            }
-            
-            container.innerHTML = `
-                <p>Rango actual: <strong>${currentRank.name}</strong></p>
-                <p>Misiones completadas: <strong>${gameData.stats.missionsCompleted}</strong></p>
-                <p>Puntos totales: <strong>${gameData.stats.totalPoints}</strong></p>
-                <p>Próximo rango: <strong>${nextRankInfo}</strong></p>
-                <p>Rangos desbloqueados: <strong>${gameData.stats.unlockedRanks.length}/${gameData.ranks.length}</strong></p>
-            `;
-        }
-
-        // Configurar event listeners
-        function setupEventListeners() {
-            document.getElementById('save-btn').addEventListener('click', saveGameData);
-            document.getElementById('reset-day-btn').addEventListener('click', resetDay);
-        }
-
-        // Inicializar el visor 3D (simulación)
-        function init3DViewer() {
-            const canvasContainer = document.getElementById('spartan-canvas');
-            const canvas = document.createElement('canvas');
-            canvas.width = 400;
-            canvas.height = 400;
-            canvas.style.backgroundColor = '#1a1a1a';
-            canvas.style.borderRadius = '15px';
-            
-            const ctx = canvas.getContext('2d');
-            
-            // Dibujar un objeto 3D simple (simulación)
-            ctx.fillStyle = '#cfa642';
-            ctx.font = 'bold 20px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('OBJETO 3D PERSONALIZADO', canvas.width/2, canvas.height/2);
-            ctx.font = '16px Arial';
-            ctx.fillText('(Coloca tu modelo aquí)', canvas.width/2, canvas.height/2 + 30);
-            
-            // Dibujar un cubo simple como representación
-            ctx.strokeStyle = '#f7e27e';
-            ctx.lineWidth = 3;
-            
-            // Cara frontal
-            ctx.beginPath();
-            ctx.rect(150, 150, 100, 100);
-            ctx.stroke();
-            
-            // Cara superior
-            ctx.beginPath();
-            ctx.moveTo(150, 150);
-            ctx.lineTo(130, 130);
-            ctx.lineTo(230, 130);
-            ctx.lineTo(250, 150);
-            ctx.stroke();
-            
-            // Cara lateral
-            ctx.beginPath();
-            ctx.moveTo(250, 150);
-            ctx.lineTo(230, 130);
-            ctx.lineTo(230, 230);
-            ctx.lineTo(250, 250);
-            ctx.stroke();
-            
-            canvasContainer.appendChild(canvas);
-        }
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
