@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legiones de Roma - Sistema de Virtud</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/home.css">
+</head>
+<body class="bg-light">
+  <!-- Efectos de luces ambientales -->
+  <div class="light-effect light-1"></div>
+  <div class="light-effect light-2"></div>
+  <div class="light-effect light-3"></div>
+
+  <!-- ====== 🏪 TIENDA (Superior Izquierda) ====== -->
+  <div class="fixed-top-left">
+    <button class="btn btn-secondary" type="button" onclick="mostrarTienda()">
+      🏪 Tienda
+    </button>
+  </div>
+
+  <!-- ====== 💰 DRAGMAS (Centro Superior) ====== -->
+  <div class="fixed-top-center">
+    <div class="stats-display">
+      <div class="stat-item">
+        <span class="stat-icon">💰</span>
+        <span id="dragmas-count">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">💪</span>
+        <span id="poder-count">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">📚</span>
+        <span id="conocimiento-count">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">🗣️</span>
+        <span id="influencia-count">0</span>
+      </div>
+      <div class="stat-item" onclick="mostrarAmigos()">
+        <span class="stat-icon">👥</span>
+        <span id="amigos-count">0</span>/50
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 📜 MISIONES (Superior Derecha) ====== -->
+  <div class="fixed-top-right">
+    <button class="btn btn-warning" type="button" onclick="mostrarMisiones()">
+      📜 Misiones
+    </button>
+  </div>
+
+  <!-- ====== 🏛️ JERARQUÍA (Parte Inferior) ====== -->
+  <div class="fixed-bottom">
+    <div class="card shadow text-center roman-border">
+      <div class="card-body">
+        <h2 class="text-success">🏛️ Jerarquía</h2>
+        <h3 id="rango" class="fw-bold text-danger">SIN VIRTUD</h3>
+        <p id="descripcion">Comienza tu camino hacia la excelencia</p>
+        <button onclick="mostrarPiramide()" class="btn btn-outline-warning">Ver Pirámide de Virtud</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 🏛️ CONTENIDO CENTRAL ====== -->
+  <div class="main-content">
+    <img src="../data/log/dreamina.png" alt="Escudo Romano" class="center-image">
+  </div>
+
+  <!-- ====== 🏪 MODAL TIENDA ====== -->
+  <div class="modal fade" id="tiendaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content roman-border">
+        <div class="modal-header">
+          <h5 class="modal-title">🏪 Tienda - Dragmas: <span id="dragmas-tienda">0</span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h6>💪 Mejoras de Poder</h6>
+              <div class="list-group">
+                <button class="list-group-item list-group-item-action" onclick="comprarItem('entrenamiento', 5)">
+                  Rutina Básica - 5 dragmas
+                </button>
+                <button class="list-group-item list-group-item-action" onclick="comprarItem('suplemento', 15)">
+                  Suplementos - 15 dragmas
+                </button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h6>📚 Mejoras de Conocimiento</h6>
+              <div class="list-group">
+                <button class="list-group-item list-group-item-action" onclick="comprarItem('libro', 8)">
+                  Libro Especial - 8 dragmas
+                </button>
+                <button class="list-group-item list-group-item-action" onclick="comprarItem('curso', 25)">
+                  Curso Avanzado - 25 dragmas
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 📜 MODAL MISIONES ====== -->
+  <div class="modal fade" id="misionesModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content roman-border">
+        <div class="modal-header">
+          <h5 class="modal-title">📜 Gestión de Dragmas: <span id="dragmas-misiones">0</span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-3">
+            <input type="number" id="dragmas-input" class="form-control" placeholder="Cantidad de dragmas">
+            <button class="btn btn-success" onclick="agregarDragmas()">➕ Agregar</button>
+            <button class="btn btn-danger" onclick="quitarDragmas()">➖ Quitar</button>
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <h6>💪 Ejercicio Físico</h6>
+              <div class="input-group mb-2">
+                <input type="number" id="ejercicio-tiempo" class="form-control" placeholder="Tiempo">
+                <select id="ejercicio-unidad" class="form-select">
+                  <option value="minutos">Minutos</option>
+                  <option value="horas">Horas</option>
+                </select>
+                <button class="btn btn-primary" onclick="registrarEjercicio()">Registrar</button>
+              </div>
+              <small class="text-muted">Máximo 4 horas por día. Extra: -1 desgaste/30min</small>
+            </div>
+            
+            <div class="col-md-6">
+              <h6>📚 Estudio</h6>
+              <div class="mb-2">
+                <label>Theoría:</label>
+                <div class="input-group">
+                  <input type="number" id="teoria-cantidad" class="form-control">
+                  <select id="teoria-unidad" class="form-select">
+                    <option value="minutos">Minutos</option>
+                    <option value="horas">Horas</option>
+                    <option value="dias">Días</option>
+                    <option value="semanas">Semanas</option>
+                    <option value="años">Años</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-2">
+                <label>Práctica:</label>
+                <div class="input-group">
+                  <input type="number" id="practica-cantidad" class="form-control">
+                  <select id="practica-unidad" class="form-select">
+                    <option value="minutos">Minutos</option>
+                    <option value="horas">Horas</option>
+                    <option value="dias">Días</option>
+                    <option value="semanas">Semanas</option>
+                    <option value="años">Años</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="registrarEstudio()">Registrar Estudio</button>
+            </div>
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <h6>🗣️ Influencia Social</h6>
+              <div class="input-group mb-3">
+                <input type="number" id="personas-hoy" class="form-control" placeholder="Personas hoy" min="0" max="1500">
+                <button class="btn btn-info" onclick="registrarInteracciones()">Registrar</button>
+              </div>
+              <div id="influencia-alerta"></div>
+            </div>
+            
+            <div class="col-md-6">
+              <h6>👥 Gestión de Amigos</h6>
+              <button class="btn btn-success w-100 mb-2" onclick="mostrarAgregarAmigo()">➕ Agregar Amigo</button>
+              <button class="btn btn-warning w-100" onclick="mostrarEstadisticasAmigos()">📊 Estadísticas</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 👥 MODAL AMIGOS ====== -->
+  <div class="modal fade" id="amigosModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content roman-border">
+        <div class="modal-header">
+          <h5 class="modal-title">👥 Amigos: <span id="amigos-total">0</span>/50</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="lista-amigos" class="mb-3"></div>
+          <div class="progress mb-3">
+            <div id="amigos-progress" class="progress-bar" style="width: 0%"></div>
+          </div>
+          <button class="btn btn-success w-100 mb-2" onclick="mostrarAgregarAmigo()">➕ Agregar Amigo</button>
+          <button class="btn btn-danger w-100" onclick="mostrarEliminarAmigo()">🗑️ Eliminar Amigo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====️ MODAL AGREGAR AMIGO ====== -->
+  <div class="modal fade" id="agregarAmigoModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content roman-border">
+        <div class="modal-header">
+          <h5 class="modal-title">➕ Agregar Amigo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Nombre/Apodo:</label>
+            <input type="text" id="amigo-nombre" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label>Círculo:</label>
+            <select id="amigo-circulo" class="form-select">
+              <option value="1">1° Círculo - Familia</option>
+              <option value="2">2° Círculo - Familia Lejana</option>
+              <option value="3">3° Círculo - Amigo Leal</option>
+              <option value="4">4° Círculo - Conocido</option>
+              <option value="5">5° Círculo - Herrante</option>
+            </select>
+          </div>
+          <button class="btn btn-primary w-100" onclick="agregarAmigo()">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====️ MODAL PIRÁMIDE ====== -->
+  <div class="modal fade" id="piramideModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content roman-border">
+        <div class="modal-header">
+          <h5 class="modal-title">🏛️ Pirámide de Virtud</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="piramide">
+            <div class="nivel-piramide nivel-5" id="nivel-enigma">
+              <div class="rango-nombre">ENIGMA ★</div>
+              <div class="rango-desc">Creador de realidades</div>
+            </div>
+            <div class="nivel-piramide nivel-4" id="nivel-alfa">
+              <div class="rango-nombre">ALFA ♛</div>
+              <div class="rango-desc">Líder nato</div>
+            </div>
+            <div class="nivel-piramide nivel-3" id="nivel-delta">
+              <div class="rango-nombre">DELTA ▼</div>
+              <div class="rango-desc">Resiliencia y experiencia</div>
+            </div>
+            <div class="nivel-piramide nivel-2" id="nivel-beta">
+              <div class="rango-nombre">BETA ▬</div>
+              <div class="rango-desc">Conformista</div>
+            </div>
+            <div class="nivel-piramide nivel-1" id="nivel-omega">
+              <div class="rango-nombre">OMEGA ▽</div>
+              <div class="rango-desc">Base de la pirámide</div>
+            </div>
+            <div class="nivel-piramide nivel-0" id="nivel-sin-virtud">
+              <div class="rango-nombre">SIN VIRTUD</div>
+              <div class="rango-desc">Comienza tu camino</div>
+            </div>
+          </div>
+          <div class="mt-3">
+            <h6>Tu posición actual: <span id="posicion-actual" class="fw-bold"></span></h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 🔔 TOASTS ====== -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toast" class="toast align-items-center text-bg-dark border-0" role="alert">
+      <div class="d-flex">
+        <div id="toast-body" class="toast-body"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/global.js"></script>
+  <script src="js/home.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

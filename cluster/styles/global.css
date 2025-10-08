@@ -1,0 +1,166 @@
+/* ====== VARIABLES GLOBALES Y ESTILOS BASE ====== */
+/* Versión: 2.0 - Sistema expandido con nuevos componentes */
+/* Cambio futuro: Implementar tema oscuro/claro y accesibilidad */
+
+:root {
+  --base-size: 0.5vw;
+  --padding-base: calc(var(--base-size) * 2);
+  --font-size-base: calc(var(--base-size) * 1.5);
+  --element-width: calc(var(--base-size) * 15);
+  --element-height: calc(var(--base-size) * 3);
+  
+  /* Colores personalizados */
+  --color-primary: #8B4513;
+  --color-secondary: #D4AF37;
+  --color-accent: #C0C0C0;
+  --color-dark: #2F2F2F;
+  --color-light: #F5F5DC;
+  --color-success: #28a745;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-max: linear-gradient(45deg, #FFD700, #FFA500);
+}
+
+/* Ajustes responsive */
+@media (max-width: 768px) {
+  :root {
+    --base-size: 1.5vw;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  :root {
+    --base-size: 0.8vw;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --base-size: 0.4vw;
+  }
+}
+
+/* Estilos base del body */
+body {
+  padding-top: calc(var(--base-size) * 15);
+  padding-bottom: calc(var(--base-size) * 15);
+  margin: 0;
+  font-size: var(--font-size-base);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d1b0e 100%);
+  min-height: 100vh;
+  color: var(--color-light);
+  font-family: 'Georgia', serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Efecto de textura de pergamino */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><rect width="100" height="100" fill="none" stroke="%23D4AF37" stroke-width="2"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23D4AF37" stroke-width="1"/></svg>');
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Efectos de luces ambientales */
+.light-effect {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.15;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.light-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #D4AF37 0%, transparent 70%);
+  top: 10%;
+  left: 10%;
+  animation: float 15s infinite ease-in-out;
+}
+
+.light-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #8B4513 0%, transparent 70%);
+  bottom: 5%;
+  right: 15%;
+  animation: float 20s infinite ease-in-out reverse;
+}
+
+.light-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #C0C0C0 0%, transparent 70%);
+  top: 50%;
+  left: 80%;
+  animation: float 12s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, -15px) scale(1.05);
+  }
+  50% {
+    transform: translate(-10px, 10px) scale(0.95);
+  }
+  75% {
+    transform: translate(-15px, -20px) scale(1.02);
+  }
+}
+
+/* Efectos de partículas decorativas */
+.particle {
+  position: absolute;
+  background: rgba(212, 175, 55, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Espaciado entre elementos */
+section, article, .card, .container {
+  margin-bottom: calc(var(--base-size) * 1);
+}
+
+button, input, select, textarea {
+  margin: calc(var(--base-size) * 0.3);
+}
+
+/* Efectos de sombra */
+.shadow {
+  box-shadow: 0 calc(var(--base-size) * 0.2) calc(var(--base-size) * 0.4) rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Clase para elementos al máximo */
+.max-level {
+  background: var(--color-max) !important;
+  color: #2d1b0e !important;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5) !important;
+}
+
+/* Efecto de advertencia */
+.warning-effect {
+  animation: pulse-warning 2s infinite;
+  border: 2px solid var(--color-danger) !important;
+}
+
+@keyframes pulse-warning {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(220, 53, 69, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(220, 53, 69, 0.8);
+  }
+}
