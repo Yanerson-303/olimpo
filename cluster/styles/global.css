@@ -44,7 +44,7 @@
 body {
   padding-top: calc(var(--base-size) * 15);
   padding-bottom: calc(var(--base-size) * 15);
-  margin: 0;
+  margin: 1%;
   font-size: var(--font-size-base);
   background: linear-gradient(135deg, #1a1a1a 0%, #2d1b0e 100%);
   min-height: 100vh;
@@ -52,6 +52,7 @@ body {
   font-family: 'Georgia', serif;
   overflow-x: hidden;
   position: relative;
+
 }
 
 /* Efecto de textura de pergamino */
