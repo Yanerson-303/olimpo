@@ -263,9 +263,7 @@ function renderizarTienda() {
 
 // ====== SISTEMA DEL INVENTARIO ======
 let inventarioRopa = [
-  { id: 1, nombre: "Camiseta Básica", tipo: "camiseta", estado: "bueno", icono: "👕" },
-  { id: 2, nombre: "Pantalón Vaquero", tipo: "pantalon", estado: "bueno", icono: "👖" },
-  { id: 3, nombre: "Chaqueta de Cuero", tipo: "chaqueta", estado: "bueno", icono: "🧥" }
+
 ];
 
 let dragmas = 100;
