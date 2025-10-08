@@ -116,43 +116,70 @@
       <img src="../data/log/dreamina.png" alt="Escudo Romano" class="center-image">
     </div>
 
-    <!-- ====== 🏪 MODAL TIENDA ====== -->
-    <div class="modal fade" id="tiendaModal" tabindex="-1">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content roman-border">
-          <div class="modal-header">
-            <h5 class="modal-title">🏪 Tienda - Dragmas: <span id="dragmas-tienda">0</span></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- ====== 🎒 INVENTARIO DE ROPA ====== -->
+<div class="container my-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card bg-dark border-warning">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">🎒 Inventario de Ropa</h4>
+          <div>
+            <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#tiendaModal">
+              🏪 Tienda
+            </button>
+            <span class="badge bg-warning text-dark fs-6">Dragmas: <span id="dragmas-count">100</span></span>
           </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-6">
-                <h6>💪 Mejoras de Poder</h6>
-                <div class="list-group">
-                  <button class="list-group-item list-group-item-action" onclick="comprarItem('entrenamiento', 5)">
-                    Rutina Básica - 5 dragmas
-                  </button>
-                  <button class="list-group-item list-group-item-action" onclick="comprarItem('suplemento', 15)">
-                    Suplementos - 15 dragmas
-                  </button>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <h6>📚 Mejoras de Conocimiento</h6>
-                <div class="list-group">
-                  <button class="list-group-item list-group-item-action" onclick="comprarItem('libro', 8)">
-                    Libro Especial - 8 dragmas
-                  </button>
-                  <button class="list-group-item list-group-item-action" onclick="comprarItem('curso', 25)">
-                    Curso Avanzado - 25 dragmas
-                  </button>
-                </div>
-              </div>
-            </div>
+        </div>
+        <div class="card-body">
+          <div class="row" id="inventario-ropa">
+            <!-- Los items de ropa se generarán aquí dinámicamente -->
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ====== 🛒 MODAL VENDER ====== -->
+<div class="modal fade" id="venderModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark border-warning">
+      <div class="modal-header">
+        <h5 class="modal-title">💰 Vender Ropa</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Cuántos dragmas vale <strong id="nombre-prenda"></strong>?</p>
+        <div class="input-group mb-3">
+          <input type="number" class="form-control bg-secondary text-light" id="precio-prenda" min="1" max="100" value="10">
+          <span class="input-group-text bg-warning text-dark">dragmas</span>
+        </div>
+        <div class="alert alert-info">
+          <small>Dragmas actuales: <span id="dragmas-actuales">100</span></small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" id="confirmar-venta">Vender</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== 🏪 MODAL TIENDA ====== -->
+<div class="modal fade" id="tiendaModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content bg-dark border-warning">
+      <div class="modal-header">
+        <h5 class="modal-title">🏪 Tienda - Dragmas: <span id="dragmas-tienda">0</span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="tienda-contenido">
+        <!-- Los componentes de la tienda se cargarán aquí automáticamente -->
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- ====== 📜 MODAL MISIONES ====== -->
     <div class="modal fade" id="misionesModal" tabindex="-1">

@@ -363,3 +363,127 @@
     border: var(--bs-card-border-width) solid var(--bs-card-border-color);
     border-radius: var(--bs-card-border-radius);
 }
+
+/* Estilos para el inventario de ropa */
+#inventario-ropa {
+  min-height: 200px;
+}
+
+.item-ropa {
+  background-color: #2d3748;
+  border: 2px solid #4a5568;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.item-ropa:hover {
+  border-color: #ecc94b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(236, 201, 75, 0.2);
+}
+
+.item-roto {
+  background-color: #4a5568 !important;
+  border-color: #718096 !important;
+  opacity: 0.7;
+  position: relative;
+}
+
+.item-roto::after {
+  content: "ROTO";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  background-color: rgba(220, 38, 38, 0.8);
+  color: white;
+  font-weight: bold;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  z-index: 10;
+}
+
+/* Barra de progreso para items rotos */
+.barra-deshacer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: #4a5568;
+  overflow: hidden;
+}
+
+.progreso-deshacer {
+  height: 100%;
+  background-color: #e53e3e;
+  width: 100%;
+  animation: desvanecer 10s linear forwards;
+}
+
+@keyframes desvanecer {
+  0% { width: 100%; }
+  100% { width: 0%; }
+}
+
+.icono-ropa {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.badge-dragmas {
+  background-color: #ecc94b;
+  color: #1a202c;
+}
+
+.btn-inventario {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+}
+
+.slot-vacio {
+  background-color: #1a202c;
+  border: 2px dashed #4a5568;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  min-height: 120px;
+}
+
+.slot-vacio:hover {
+  border-color: #718096;
+  color: #a0aec0;
+}
+
+/* Estilos para la tienda */
+.roman-border {
+  border: 3px solid #d4af37;
+  border-radius: 10px;
+}
+
+.list-group-item {
+  border: 1px solid #4a5568;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.list-group-item:hover {
+  background-color: #4a5568 !important;
+  border-color: #ecc94b;
+}
+
+.categoria-tienda {
+  margin-bottom: 20px;
+}
+
+.categoria-titulo {
+  color: #ecc94b;
+  border-bottom: 2px solid #ecc94b;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}

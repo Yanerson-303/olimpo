@@ -1,30 +1,22 @@
 /* ====== JAVASCRIPT PARA COMPONENTES ====== */
 /* Versión: 2.0 - Componentes y utilidades del sistema */
-/* Cambio futuro: Sistema de plugins para componentes */
 
 /* ====== 🎪 ANIMACIONES Y EFECTOS ====== */
 function crearParticulas(cantidad) {
-  // Limpiar partículas existentes
   document.querySelectorAll('.particle').forEach(p => p.remove());
 
   for (let i = 0; i < cantidad; i++) {
     const particula = document.createElement('div');
     particula.classList.add('particle');
 
-    // Tamaño aleatorio
     const tamaño = Math.random() * 5 + 2;
     particula.style.width = `${tamaño}px`;
     particula.style.height = `${tamaño}px`;
-
-    // Posición aleatoria
     particula.style.left = `${Math.random() * 100}vw`;
     particula.style.top = `${Math.random() * 100}vh`;
 
-    // Animación
     const duracion = Math.random() * 10 + 5;
     particula.style.animation = `float ${duracion}s infinite ease-in-out`;
-
-    // Opacidad aleatoria
     particula.style.opacity = Math.random() * 0.7 + 0.3;
 
     document.body.appendChild(particula);
@@ -112,13 +104,8 @@ function verificarLogros() {
 
 /* ====== 🕒 TEMPORIZADORES ====== */
 function iniciarTemporizadores() {
-  // Verificar logros cada 30 segundos
   setInterval(verificarLogros, 30000);
-
-  // Actualizar interfaz cada 10 segundos
   setInterval(actualizarEstadisticas, 10000);
-
-  // Verificar sangrado cada minuto
   setInterval(() => {
     if (estado.diasSinInteraccion > 0) {
       aplicarSangradoInfluencia();
@@ -131,12 +118,6 @@ function iniciarTemporizadores() {
 function aplicarEfectoMaximo(elemento) {
   elemento.classList.add('max-level');
   crearParticulas(50);
-  
-  // Efecto de sonido (simulado)
-  if (typeof Audio !== 'undefined') {
-    const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQ');
-    audio.play().catch(() => {}); // Ignorar errores de autoplay
-  }
 }
 
 /* ====== 📋 UTILIDADES ====== */
@@ -155,16 +136,12 @@ function obtenerFechaActual() {
 
 /* ====== 🎯 INICIALIZACIÓN DE COMPONENTES ====== */
 document.addEventListener('DOMContentLoaded', function() {
-  // Agregar evento de clic derecho para controles rápidos
   document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
     mostrarMenuContextual(e);
   });
 
-  // Iniciar temporizadores
   iniciarTemporizadores();
-
-  // Crear partículas iniciales
   crearParticulas(30);
 });
 
@@ -202,3 +179,279 @@ function mostrarLogros() {
   }
   alert(mensaje);
 }
+
+// ====== SISTEMA DE COMPONENTES PARA LA TIENDA ======
+const CatalogoTienda = {
+  categorias: [
+    {
+      id: 'ropa',
+      nombre: '👕 Ropa Nueva',
+      items: [
+        { id: 'camiseta', nombre: 'Camiseta Básica', precio: 15, icono: '👕', tipo: 'camiseta' },
+        { id: 'pantalon', nombre: 'Pantalón Vaquero', precio: 25, icono: '👖', tipo: 'pantalon' },
+        { id: 'chaqueta', nombre: 'Chaqueta de Cuero', precio: 40, icono: '🧥', tipo: 'chaqueta' },
+        { id: 'vestido', nombre: 'Vestido Elegante', precio: 35, icono: '👗', tipo: 'vestido' }
+      ]
+    },
+    {
+      id: 'calzado',
+      nombre: '👟 Calzado',
+      items: [
+        { id: 'zapatos', nombre: 'Zapatos Deportivos', precio: 30, icono: '👟', tipo: 'zapatos' },
+        { id: 'botas', nombre: 'Botas de Cuero', precio: 45, icono: '👢', tipo: 'botas' },
+        { id: 'sandalias', nombre: 'Sandalias', precio: 20, icono: '👡', tipo: 'sandalias' }
+      ]
+    },
+    {
+      id: 'accesorios',
+      nombre: '🧢 Accesorios',
+      items: [
+        { id: 'gorra', nombre: 'Gorra', precio: 12, icono: '🧢', tipo: 'accesorio' },
+        { id: 'bufanda', nombre: 'Bufanda', precio: 18, icono: '🧣', tipo: 'accesorio' },
+        { id: 'gafas', nombre: 'Gafas de Sol', precio: 22, icono: '🕶️', tipo: 'accesorio' },
+        { id: 'mochila', nombre: 'Mochila', precio: 28, icono: '🎒', tipo: 'accesorio' }
+      ]
+    },
+    {
+      id: 'especiales',
+      nombre: '⭐ Items Especiales',
+      items: [
+        { id: 'armadura', nombre: 'Armadura Legendaria', precio: 100, icono: '🛡️', tipo: 'especial' },
+        { id: 'corona', nombre: 'Corona Real', precio: 80, icono: '👑', tipo: 'especial' },
+        { id: 'varita', nombre: 'Varita Mágica', precio: 60, icono: '⚡', tipo: 'especial' }
+      ]
+    }
+  ]
+};
+
+function agregarCategoriaTienda(id, nombre, items = []) {
+  CatalogoTienda.categorias.push({
+    id: id,
+    nombre: nombre,
+    items: items
+  });
+}
+
+function agregarItemTienda(categoriaId, item) {
+  const categoria = CatalogoTienda.categorias.find(cat => cat.id === categoriaId);
+  if (categoria) {
+    categoria.items.push(item);
+  }
+}
+
+function renderizarTienda() {
+  const contenedor = document.getElementById('tienda-contenido');
+  contenedor.innerHTML = '';
+
+  CatalogoTienda.categorias.forEach(categoria => {
+    const categoriaHTML = `
+      <div class="categoria-tienda">
+        <h6 class="categoria-titulo">${categoria.nombre}</h6>
+        <div class="list-group">
+          ${categoria.items.map(item => `
+            <button class="list-group-item list-group-item-action bg-secondary text-light" 
+                    onclick="comprarItem('${item.id}', ${item.precio})">
+              ${item.icono} ${item.nombre} - ${item.precio} dragmas
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    contenedor.innerHTML += categoriaHTML;
+  });
+}
+
+// ====== SISTEMA DEL INVENTARIO ======
+let inventarioRopa = [
+  { id: 1, nombre: "Camiseta Básica", tipo: "camiseta", estado: "bueno", icono: "👕" },
+  { id: 2, nombre: "Pantalón Vaquero", tipo: "pantalon", estado: "bueno", icono: "👖" },
+  { id: 3, nombre: "Chaqueta de Cuero", tipo: "chaqueta", estado: "bueno", icono: "🧥" }
+];
+
+let dragmas = 100;
+let itemAVender = null;
+let timersDesaparicion = {};
+
+const mapeoItemsTienda = {
+  'camiseta': { nombre: "Camiseta Básica", tipo: "camiseta", icono: "👕" },
+  'pantalon': { nombre: "Pantalón Vaquero", tipo: "pantalon", icono: "👖" },
+  'chaqueta': { nombre: "Chaqueta de Cuero", tipo: "chaqueta", icono: "🧥" },
+  'vestido': { nombre: "Vestido Elegante", tipo: "vestido", icono: "👗" },
+  'zapatos': { nombre: "Zapatos Deportivos", tipo: "zapatos", icono: "👟" },
+  'botas': { nombre: "Botas de Cuero", tipo: "botas", icono: "👢" },
+  'sandalias': { nombre: "Sandalias", tipo: "sandalias", icono: "👡" },
+  'gorra': { nombre: "Gorra", tipo: "accesorio", icono: "🧢" },
+  'bufanda': { nombre: "Bufanda", tipo: "accesorio", icono: "🧣" },
+  'gafas': { nombre: "Gafas de Sol", tipo: "accesorio", icono: "🕶️" },
+  'mochila': { nombre: "Mochila", tipo: "accesorio", icono: "🎒" },
+  'armadura': { nombre: "Armadura Legendaria", tipo: "especial", icono: "🛡️" },
+  'corona': { nombre: "Corona Real", tipo: "especial", icono: "👑" },
+  'varita': { nombre: "Varita Mágica", tipo: "especial", icono: "⚡" }
+};
+
+function inicializarInventario() {
+  actualizarInventario();
+  actualizarDragmas();
+  renderizarTienda();
+}
+
+function actualizarInventario() {
+  const contenedor = document.getElementById('inventario-ropa');
+  contenedor.innerHTML = '';
+  
+  inventarioRopa.forEach(item => {
+    const slot = document.createElement('div');
+    slot.className = `col-md-4 col-sm-6 mb-3 item-ropa ${item.estado === 'roto' ? 'item-roto' : ''}`;
+    
+    let barraProgreso = '';
+    if (item.estado === 'roto') {
+      barraProgreso = `
+        <div class="barra-deshacer">
+          <div class="progreso-deshacer" id="barra-${item.id}"></div>
+        </div>
+      `;
+    }
+    
+    slot.innerHTML = `
+      <div class="p-3 text-center position-relative">
+        ${barraProgreso}
+        <div class="icono-ropa">${item.icono}</div>
+        <h6 class="mb-1">${item.nombre}</h6>
+        <small class="text-muted">${item.tipo}</small>
+        <div class="mt-2 d-flex justify-content-center gap-1">
+          <button class="btn btn-sm btn-danger btn-inventario" onclick="eliminarRopa(${item.id})">
+            🗑️ Eliminar
+          </button>
+          <button class="btn btn-sm btn-warning btn-inventario" 
+                  onclick="prepararVenta(${item.id})" 
+                  ${item.estado === 'roto' ? 'disabled' : ''}>
+            💰 Vender
+          </button>
+        </div>
+      </div>
+    `;
+    
+    contenedor.appendChild(slot);
+    
+    if (item.estado === 'roto' && !timersDesaparicion[item.id]) {
+      iniciarDesaparicion(item.id);
+    }
+  });
+  
+  const slotsVacios = 9 - inventarioRopa.length;
+  for (let i = 0; i < slotsVacios; i++) {
+    const slotVacio = document.createElement('div');
+    slotVacio.className = 'col-md-4 col-sm-6 mb-3 slot-vacio';
+    slotVacio.innerHTML = '<span>Vacío</span>';
+    contenedor.appendChild(slotVacio);
+  }
+}
+
+function comprarItem(itemId, precio) {
+  if (dragmas >= precio) {
+    const itemData = mapeoItemsTienda[itemId];
+    
+    if (itemData) {
+      const nuevoItem = {
+        id: Date.now(),
+        ...itemData,
+        estado: "bueno"
+      };
+      
+      inventarioRopa.push(nuevoItem);
+      dragmas -= precio;
+      
+      actualizarInventario();
+      actualizarDragmas();
+      
+      const modal = bootstrap.Modal.getInstance(document.getElementById('tiendaModal'));
+      modal.hide();
+      
+      mostrarMensaje(`¡Has comprado ${nuevoItem.nombre} por ${precio} dragmas!`, 'success');
+    }
+  } else {
+    mostrarMensaje('No tienes suficientes dragmas para comprar este item', 'error');
+  }
+}
+
+function iniciarDesaparicion(itemId) {
+  timersDesaparicion[itemId] = setTimeout(() => {
+    inventarioRopa = inventarioRopa.filter(item => item.id !== itemId);
+    actualizarInventario();
+    mostrarMensaje('Un objeto roto ha desaparecido del inventario', 'warning');
+    delete timersDesaparicion[itemId];
+  }, 10000);
+}
+
+function actualizarDragmas() {
+  document.getElementById('dragmas-count').textContent = dragmas;
+  document.getElementById('dragmas-actuales').textContent = dragmas;
+  document.getElementById('dragmas-tienda').textContent = dragmas;
+}
+
+function eliminarRopa(id) {
+  if (confirm("¿Estás seguro de que quieres marcar esta prenda como rota? Desaparecerá en 10 segundos.")) {
+    const itemIndex = inventarioRopa.findIndex(item => item.id === id);
+    if (itemIndex !== -1) {
+      inventarioRopa[itemIndex].estado = 'roto';
+      actualizarInventario();
+      mostrarMensaje('La prenda ha sido marcada como ROTA y desaparecerá en 10 segundos', 'info');
+    }
+  }
+}
+
+function prepararVenta(id) {
+  itemAVender = inventarioRopa.find(item => item.id === id);
+  if (itemAVender) {
+    document.getElementById('nombre-prenda').textContent = itemAVender.nombre;
+    document.getElementById('precio-prenda').value = calcularPrecioBase(itemAVender);
+    const modal = new bootstrap.Modal(document.getElementById('venderModal'));
+    modal.show();
+  }
+}
+
+function calcularPrecioBase(item) {
+  const preciosBase = {
+    'camiseta': 5, 'pantalon': 10, 'chaqueta': 15, 'zapatos': 12, 
+    'accesorio': 8, 'vestido': 12, 'botas': 18, 'sandalias': 8,
+    'especial': 25
+  };
+  return preciosBase[item.tipo] || 5;
+}
+
+document.getElementById('confirmar-venta').addEventListener('click', function() {
+  if (itemAVender) {
+    const precio = parseInt(document.getElementById('precio-prenda').value);
+    if (precio > 0) {
+      inventarioRopa = inventarioRopa.filter(item => item.id !== itemAVender.id);
+      if (timersDesaparicion[itemAVender.id]) {
+        clearTimeout(timersDesaparicion[itemAVender.id]);
+        delete timersDesaparicion[itemAVender.id];
+      }
+      dragmas += precio;
+      actualizarInventario();
+      actualizarDragmas();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('venderModal'));
+      modal.hide();
+      mostrarMensaje(`¡Has vendido ${itemAVender.nombre} por ${precio} dragmas!`, 'success');
+      itemAVender = null;
+    } else {
+      alert('Por favor, introduce un precio válido');
+    }
+  }
+});
+
+function mostrarMensaje(mensaje, tipo) {
+  const alerta = document.createElement('div');
+  const tipoClase = tipo === 'error' ? 'danger' : tipo;
+  alerta.className = `alert alert-${tipoClase} alert-dismissible fade show position-fixed`;
+  alerta.style.top = '20px';
+  alerta.style.right = '20px';
+  alerta.style.zIndex = '1050';
+  alerta.style.minWidth = '300px';
+  alerta.innerHTML = `${mensaje}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+  document.body.appendChild(alerta);
+  setTimeout(() => { if (alerta.parentNode) alerta.parentNode.removeChild(alerta); }, 3000);
+}
+
+document.addEventListener('DOMContentLoaded', inicializarInventario);
