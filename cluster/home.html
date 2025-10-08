@@ -111,10 +111,55 @@
       </div>
     </div>
 
-    <!-- ====== 🏛️ CONTENIDO CENTRAL ====== -->
-    <div class="main-content">
-      <img src="../data/log/dreamina.png" alt="Escudo Romano" class="center-image">
-    </div>
+<!-- ====== 🏛️ CONTENIDO CENTRAL ====== -->
+<div class="main-content">
+  <img src="../data/log/dreamina.png" alt="Escudo Romano" class="center-image" id="rightClickImage">
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const image = document.getElementById('rightClickImage');
+  let touchTimer;
+  
+  // Detectar toque largo para simular clic derecho
+  image.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    touchTimer = setTimeout(() => {
+      // Disparar evento de clic derecho
+      const rightClickEvent = new MouseEvent('contextmenu', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        button: 2, // Botón derecho
+        buttons: 2
+      });
+      image.dispatchEvent(rightClickEvent);
+    }, 80); // 500ms = toque largo
+  });
+
+  // Cancelar si el usuario levanta el dedo rápido
+  image.addEventListener('touchend', function(e) {
+    clearTimeout(touchTimer);
+  });
+
+  // Cancelar si el usuario mueve el dedo
+  image.addEventListener('touchmove', function(e) {
+    clearTimeout(touchTimer);
+  });
+
+  // Manejar el clic derecho (nativo del navegador)
+  image.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    // Aquí se abrirá el menú contextual nativo del navegador
+    // o puedes mostrar tu propio menú personalizado
+    console.log('Click derecho activado en la imagen');
+    
+    // Para forzar el menú nativo (depende del navegador)
+    // Esto puede no funcionar en todos los navegadores móviles
+    // debido a restricciones de seguridad
+  });
+});
+</script>
 
 <!-- ====== 🎒 INVENTARIO DE ROPA ====== -->
 <div class="container my-4">
