@@ -31,46 +31,356 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<!-- ====== 🎯 CABECERA DE CONTROL CON BOOTSTRAP ====== -->
-<header class="control-header container-fluid py-2  text-white">
-  <div class="row align-items-center">
-    
-    <!-- ====== 🏪 TIENDA (Izquierda) ====== -->
-    <div class="col-12 col-md-3 col-lg-2 mb-2 mb-md-0">
-      <div class="d-flex justify-content-center justify-content-md-start">
-        <button class="btn btn-outline-light d-flex align-items-center" type="button" onclick="mostrarTienda()">
-          <span class="me-2">🏪</span>
-          <span>Tienda</span>
-        </button>
+
+<div class="bd-example m-0 border-0 bd-example-row">
+  <div class="container text-center">
+    <div class="row">
+      <!-- Perfil -->
+      <div class="col" style="background-color: rgba(106, 114, 121, 0.25) !important; color: black; text-shadow: 0 0 10px #3e330639;">
+        <div class="dropdown">
+          <a href="#" class="d-block text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://github.com/mdo.png" alt="Perfil" width="32" height="32" class="rounded-circle">
+          </a>
+          <ul class="dropdown-menu text-small shadow">
+            <li><a class="dropdown-item" href="#"><i class="fas fa-plus-circle me-2"></i>Nuevo proyecto</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Perfil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
+          </ul>
+        </div>
       </div>
-    </div>
-
-
-    <!-- ====== 📜 MISIONES (Derecha) ====== -->
-    <div class="col-12 col-md-3 col-lg-2">
-      <div class="d-flex justify-content-center justify-content-md-end">
-        <button class="btn btn-warning d-flex align-items-center" type="button" onclick="mostrarMisiones()">
-          <span class="me-2">📜</span>
-          <span>Misiones</span>
-        </button>
+      
+      <!-- Misiones -->
+      <div class="col" style="background-color: rgba(106, 114, 121, 0.25) !important; color: color: black; text-shadow: 0 0 10px #3e330630;">
+        <div class="d-flex justify-content-center">
+          <button type="button" class="btn btn-warning btn-sm d-flex align-items-center" onclick="mostrarMisiones()">
+            <span class="me-1">📜</span>
+            <span class="d-none d-sm-inline">Misiones</span>
+          </button>
+        </div>
       </div>
-    </div>
-    
-  </div>
-</header>
-
-  <main>
-    <!-- ====== 🏛️ JERARQUÍA (Parte Inferior) ====== -->
-    <div class="fixed-bottom">
-      <div class="card shadow text-center roman-border">
-        <div class="card-body">
-          <h2 class="text-success">🏛️ Jerarquía</h2>
-          <h3 id="rango" class="fw-bold text-danger">SIN VIRTUD</h3>
-          <p id="descripcion">Comienza tu camino hacia la excelencia</p>
-          <button onclick="mostrarPiramide()" class="btn btn-outline-warning">Ver Pirámide de Virtud</button>
+      
+      <!-- Tienda -->
+      <div class="col" style="background-color: rgba(106, 114, 121, 0.25) !important; color: color: black; text-shadow: 0 0 10px #3e33064b;">
+        <div class="d-flex justify-content-center">
+          <button class="btn btn-outline-dark d-flex align-items-center" type="button" onclick="mostrarTienda()">
+            <span class="me-2">🏪</span>
+            <span>Tienda</span>
+          </button>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+
+    <style>
+        /* 🔘 Botones flotantes */
+        .btn-floating {
+            position: fixed;
+            left: 15px;
+            background-color: #00ff0000;
+            color: black;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px #3e3306;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-floating:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px #3e3306;;
+        }
+
+        /* Posicionamiento de botones - CORREGIDO */
+        #info-btn {
+            top: 35%;
+        }
+
+        #inventory-btn {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #map-btn {
+            top: 60%;
+        }
+
+        /* 🔹 Contenedores del menú emergente */
+        .menu-content {
+            position: fixed;
+            left: 20%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            border: 1% solid #3e3306;
+            border-radius: 12px;
+            padding: 1%;
+            width: 35em;
+            display: none;
+            z-index: 999;
+            backdrop-filter: blur(6%);
+        }
+
+        /* Estilos de texto */
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-primary {
+            color: #3e3306;
+        }
+        
+        .text-info {
+            color: #00ccff;
+        }
+        
+        .text-warning {
+            color: #ffcc00;
+        }
+        
+        .text-light {
+            color: #f0f0f0;
+        }
+        
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .small {
+            font-size: 0.875rem;
+        }
+        
+        .shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos específicos para el mapa */
+        #map-container {
+            height: 200px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3e3306;;
+            border: 1px solid #3e3306;;
+        }
+        
+        /* Estilos para el inventario */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 10fr);
+            gap: 100em;
+            margin-top: 100em;
+        }
+        
+        .inventory-slot {
+            background-color: #1a1a1a;
+            border: 1% solid #3e3306;;
+            border-radius: 1%;
+            height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3e3306;;
+        }
+    </style>
+
+
+    <!-- 📬 Botón flotante con icono de buzón para información -->
+    <button id="info-btn" class="btn-floating" title="Información">
+        📬
+    </button>
+
+    <!-- 🎒 Botón flotante con icono de mochila para inventario -->
+    <button id="inventory-btn" class="btn-floating" title="Inventario">
+        🎒
+    </button>
+
+    <!-- 🗺️ Botón flotante con icono de mapa para ubicación -->
+    <button id="map-btn" class="btn-floating" title="Mapa">
+        🗺️
+    </button>
+
+    <!-- 📬 Contenedor de información -->
+    <div id="info-panel" class="menu-content shadow">
+        <h5 class="text-center text-primary mb-2">Información</h5>
+        <p class="text-light small text-center">Actualizaciones recientes</p>
+        <div class="update-list">
+            <p class="text-light small">• Nueva versión 2.1 disponible</p>
+            <p class="text-light small">• Corrección de errores menores</p>
+            <p class="text-light small">• Mejoras en el rendimiento</p>
+        </div>
+    </div>
+
+    <!-- 🎒 Contenedor de inventario -->
+    <div id="inventory-panel" class="menu-content shadow">
+    <!-- ====== 🎒 INVENTARIO DE ROPA ====== -->
+    <div class="container my-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card bg-dark border-warning">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4 class="mb-0" style="color: white;">🎒 Inventario de Ropa</h4>
+            </div>
+            <div class="card-body">
+              <div class="row" id="inventario-ropa">
+                <!-- Los items de ropa se generarán aquí dinámicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- 🗺️ Contenedor de mapa -->
+    <div id="map-panel" class="menu-content shadow">
+        <h5 class="text-center text-warning mb-2">Mapa</h5>
+        <p class="text-light small text-center">Tu ubicación actual</p>
+        <div id="map-container">
+            <p>📍 Ubicación: Ciudad Central</p>
+        </div>
+    </div>
+
+    <script>
+        // Referencias a elementos
+        const infoBtn = document.getElementById("info-btn");
+        const inventoryBtn = document.getElementById("inventory-btn");
+        const mapBtn = document.getElementById("map-btn");
+        
+        const infoPanel = document.getElementById("info-panel");
+        const inventoryPanel = document.getElementById("inventory-panel");
+        const mapPanel = document.getElementById("map-panel");
+        
+        // Función para ocultar todos los paneles
+        function hideAllPanels() {
+            infoPanel.style.display = "none";
+            inventoryPanel.style.display = "none";
+            mapPanel.style.display = "none";
+        }
+        
+        // Alternar visibilidad de paneles
+        infoBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (infoPanel.style.display === "block") {
+                infoPanel.style.display = "none";
+            } else {
+                hideAllPanels();
+                infoPanel.style.display = "block";
+            }
+        });
+        
+        inventoryBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (inventoryPanel.style.display === "block") {
+                inventoryPanel.style.display = "none";
+            } else {
+                hideAllPanels();
+                inventoryPanel.style.display = "block";
+            }
+        });
+        
+        mapBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (mapPanel.style.display === "block") {
+                mapPanel.style.display = "none";
+            } else {
+                hideAllPanels();
+                mapPanel.style.display = "block";
+            }
+        });
+        
+        // Cerrar paneles al hacer clic fuera
+        document.addEventListener("click", () => {
+            hideAllPanels();
+        });
+        
+        // Evitar que los paneles se cierren al hacer clic dentro de ellos
+        document.querySelectorAll(".menu-content").forEach(panel => {
+            panel.addEventListener("click", (e) => {
+                e.stopPropagation();
+            });
+        });
+    </script>
+
+
+
+<!-- ====== 💰 ESTADÍSTICAS (Centro) ====== -->
+<div class="col-12 col-md-6 col-lg-8 mb-2 mb-md-0">
+  <div class="row justify-content-center g-2 g-sm-3">
+    
+    <!-- Dragmas -->
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="stat-item bg-secondary bg-opacity-25 rounded p-2 text-center" title="Dragmas disponibles">
+        <div class="stat-icon fs-5">💰</div>
+        <div class="stat-value fw-bold" id="dragmas-count">0</div>
+        <div class="stat-label small">Dragmas</div>
+      </div>
+    </div>
+    
+    <!-- Poder -->
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="stat-item bg-secondary bg-opacity-25 rounded p-2 text-center" title="Nivel de poder físico">
+        <div class="stat-icon fs-5">💪</div>
+        <div class="stat-value fw-bold" id="poder-count">0</div>
+        <div class="stat-label small">Poder</div>
+      </div>
+    </div>
+    
+    <!-- Conocimiento -->
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="stat-item bg-secondary bg-opacity-25 rounded p-2 text-center" title="Conocimiento acumulado">
+        <div class="stat-icon fs-5">📚</div>
+        <div class="stat-value fw-bold" id="conocimiento-count">0</div>
+        <div class="stat-label small">Conocimiento</div>
+      </div>
+    </div>
+    
+    <!-- Influencia -->
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="stat-item bg-secondary bg-opacity-25 rounded p-2 text-center" title="Influencia social">
+        <div class="stat-icon fs-5">🗣️</div>
+        <div class="stat-value fw-bold" id="influencia-count">0</div>
+        <div class="stat-label small">Influencia</div>
+      </div>
+    </div>
+    
+    <!-- Amigos -->
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="stat-item bg-secondary bg-opacity-25 rounded p-2 text-center" onclick="mostrarAmigos()" title="Círculo de amigos - Click para gestionar" style="cursor: pointer;">
+        <div class="stat-icon fs-5">👥</div>
+        <div class="stat-value fw-bold">
+          <span id="amigos-count">0</span>
+          <span class="stat-limit small opacity-75">/50</span>
+        </div>
+        <div class="stat-label small">Amigos</div>
+      </div>
+    </div>
+    
+    <!-- Jerarquía -->
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="stat-item bg-secondary bg-opacity-25 rounded p-2 text-center" onclick="mostrarPiramide()" title="Nivel en la jerarquía - Click para ver detalles" style="cursor: pointer;">
+        <div class="stat-icon fs-5">🏛️</div>
+        <div class="stat-value fw-bold" id="rango">SIN VIRTUD</div>
+        <div class="stat-label small">Jerarquía</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- ====== 🏛️ CONTENIDO CENTRAL ====== -->
 <div class="main-content">
@@ -122,23 +432,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- ====== 🎒 INVENTARIO DE ROPA ====== -->
-<div class="container my-4">
-  <div class="row">
-    <div class="col-12">
-      <div class="card bg-dark border-warning">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h4 class="mb-0" style="color: white;">🎒 Inventario de Ropa</h4>
-        </div>
-        <div class="card-body">
-          <div class="row" id="inventario-ropa">
-            <!-- Los items de ropa se generarán aquí dinámicamente -->
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ====== 🛒 MODAL VENDER ====== -->
 <div class="modal fade" id="venderModal" tabindex="-1">
