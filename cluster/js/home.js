@@ -1,184 +1,5 @@
-/* ====== JAVASCRIPT PARA COMPONENTES ====== */
-/* Versión: 2.0 - Componentes y utilidades del sistema */
-
-/* ====== 🎪 ANIMACIONES Y EFECTOS ====== */
-function crearParticulas(cantidad) {
-  document.querySelectorAll('.particle').forEach(p => p.remove());
-
-  for (let i = 0; i < cantidad; i++) {
-    const particula = document.createElement('div');
-    particula.classList.add('particle');
-
-    const tamaño = Math.random() * 5 + 2;
-    particula.style.width = `${tamaño}px`;
-    particula.style.height = `${tamaño}px`;
-    particula.style.left = `${Math.random() * 100}vw`;
-    particula.style.top = `${Math.random() * 100}vh`;
-
-    const duracion = Math.random() * 10 + 5;
-    particula.style.animation = `float ${duracion}s infinite ease-in-out`;
-    particula.style.opacity = Math.random() * 0.7 + 0.3;
-
-    document.body.appendChild(particula);
-  }
-}
-
-/* ====== 📊 ESTADÍSTICAS AVANZADAS ====== */
-function mostrarEstadisticasDetalladas() {
-  const stats = `
-💰 Dragmas: ${estado.dragmas} (${estado.dragmas * CONVERSION_DRAGMA} COP)
-💪 Poder: ${estado.poder}
-📚 Conocimiento: ${estado.conocimiento}
-🗣️ Influencia: ${estado.influencia}/${LIMITES.INFLUENCIA}
-👥 Amigos: ${estado.amigos.length}/${LIMITES.AMIGOS}
-💀 Desgaste Físico: ${estado.desgasteFisico}
-⚡ Ejercicio Hoy: ${estado.ejercicioHoy.toFixed(1)}h/${LIMITES.EJERCICIO_DIARIO}h
-🗣️ Interacciones Hoy: ${estado.interaccionesHoy}
-📅 Días Sin Interacción: ${estado.diasSinInteraccion}
-💔 Sangrado Activo: ${estado.sangradoInfluencia}
-  `.trim();
-
-  alert(stats);
-}
-
-/* ====== 🎮 CONTROLES RÁPIDOS ====== */
-function agregarDragmasRapido(cantidad) {
-  estado.dragmas += cantidad;
-  actualizarEstadisticas();
-  guardarEstado();
-  showToast(`💰 +${cantidad} dragmas agregados`);
-  crearParticulas(20);
-}
-
-function resetearSistema() {
-  if (confirm('¿Estás seguro de que quieres reiniciar todo el sistema? Se perderán todos los datos.')) {
-    estado = {
-      dragmas: 0,
-      poder: 0,
-      conocimiento: 0,
-      influencia: 0,
-      amigos: [],
-      desgasteFisico: 0,
-      ejercicioHoy: 0,
-      interaccionesHoy: 0,
-      ultimaFecha: null,
-      sangradoInfluencia: 0,
-      diasSinInteraccion: 0
-    };
-    localStorage.removeItem('sistemaVirtud');
-    actualizarEstadisticas();
-    showToast('🔄 Sistema reiniciado completamente');
-  }
-}
-
-/* ====== 📈 SISTEMA DE LOGROS ====== */
-const logros = {
-  primerAmigo: { obtenido: false, nombre: "Primer Paso", desc: "Agrega tu primer amigo" },
-  maxAmigos: { obtenido: false, nombre: "Vida Sana", desc: "Alcanza el máximo de amigos" },
-  maxInfluencia: { obtenido: false, nombre: "Influencer", desc: "Alcanza la máxima influencia" },
-  enigma: { obtenido: false, nombre: "Sabio", desc: "Alcanza el rango ENIGMA" }
-};
-
-function verificarLogros() {
-  if (estado.amigos.length >= 1 && !logros.primerAmigo.obtenido) {
-    logros.primerAmigo.obtenido = true;
-    showToast(`🎉 Logro desbloqueado: ${logros.primerAmigo.nombre}`);
-  }
-
-  if (estado.amigos.length >= LIMITES.AMIGOS && !logros.maxAmigos.obtenido) {
-    logros.maxAmigos.obtenido = true;
-    showToast(`🎉 Logro desbloqueado: ${logros.maxAmigos.nombre}`);
-  }
-
-  if (estado.influencia >= LIMITES.INFLUENCIA && !logros.maxInfluencia.obtenido) {
-    logros.maxInfluencia.obtenido = true;
-    showToast(`🎉 Logro desbloqueado: ${logros.maxInfluencia.nombre}`);
-  }
-
-  const rango = calcularRango();
-  if (rango.nivel === 5 && !logros.enigma.obtenido) {
-    logros.enigma.obtenido = true;
-    showToast(`🎉 Logro desbloqueado: ${logros.enigma.nombre}`);
-  }
-}
-
-/* ====== 🕒 TEMPORIZADORES ====== */
-function iniciarTemporizadores() {
-  setInterval(verificarLogros, 30000);
-  setInterval(actualizarEstadisticas, 10000);
-  setInterval(() => {
-    if (estado.diasSinInteraccion > 0) {
-      aplicarSangradoInfluencia();
-      actualizarEstadisticas();
-    }
-  }, 60000);
-}
-
-/* ====== 🎨 EFECTOS VISUALES ====== */
-function aplicarEfectoMaximo(elemento) {
-  elemento.classList.add('max-level');
-  crearParticulas(50);
-}
-
-/* ====== 📋 UTILIDADES ====== */
-function formatearNumero(numero) {
-  return new Intl.NumberFormat('es-CO').format(numero);
-}
-
-function obtenerFechaActual() {
-  return new Date().toLocaleDateString('es-CO', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-}
-
-/* ====== 🎯 INICIALIZACIÓN DE COMPONENTES ====== */
-document.addEventListener('DOMContentLoaded', function() {
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    mostrarMenuContextual(e);
-  });
-
-  iniciarTemporizadores();
-  crearParticulas(30);
-});
-
-function mostrarMenuContextual(evento) {
-  const menu = `
-💰 Agregar 10 Dragmas
-🔄 Reiniciar Sistema
-📊 Estadísticas Detalladas
-🎯 Ver Logros
-  `.trim();
-
-  const opcion = prompt("Controles Rápidos:\n\n" + menu + "\n\nIngresa el número de opción (1-4):");
-  
-  switch(opcion) {
-    case '1':
-      agregarDragmasRapido(10);
-      break;
-    case '2':
-      resetearSistema();
-      break;
-    case '3':
-      mostrarEstadisticasDetalladas();
-      break;
-    case '4':
-      mostrarLogros();
-      break;
-  }
-}
-
-function mostrarLogros() {
-  let mensaje = "🎯 Logros Obtenidos:\n\n";
-  for (const [key, logro] of Object.entries(logros)) {
-    const estado = logro.obtenido ? "✅" : "❌";
-    mensaje += `${estado} ${logro.nombre}: ${logro.desc}\n`;
-  }
-  alert(mensaje);
-}
+/* ====== JAVASCRIPT PARA COMPONENTES ESPECÍFICOS ====== */
+/* Versión: 2.0 - Componentes y utilidades específicas de la página */
 
 // ====== SISTEMA DE COMPONENTES PARA LA TIENDA ======
 const CatalogoTienda = {
@@ -187,38 +8,19 @@ const CatalogoTienda = {
       id: 'ropa',
       nombre: '👕 Ropa Nueva',
       items: [
-        { id: 'camiseta', nombre: 'Camiseta Básica', precio: 15, icono: '👕', tipo: 'camiseta' },
-        { id: 'pantalon', nombre: 'Pantalón Vaquero', precio: 25, icono: '👖', tipo: 'pantalon' },
-        { id: 'chaqueta', nombre: 'Chaqueta de Cuero', precio: 40, icono: '🧥', tipo: 'chaqueta' },
-        { id: 'vestido', nombre: 'Vestido Elegante', precio: 35, icono: '👗', tipo: 'vestido' }
+        { id: 'camiseta', nombre: 'Camiseta ', precio: 30, icono: '👕', tipo: 'camiseta' },
+        { id: 'pantalon', nombre: 'Pantalón ', precio: 80, icono: '👖', tipo: 'pantalon' },
+        { id: 'zapatos', nombre: 'Zapatos ', precio: 30, icono: '👟', tipo: 'zapatos' },
+
       ]
     },
+
+    /* agregar categoria colocar una , en el anterior      */
     {
-      id: 'calzado',
-      nombre: '👟 Calzado',
+      id: 'ropa',
+      nombre: 'Proximamente',
       items: [
-        { id: 'zapatos', nombre: 'Zapatos Deportivos', precio: 30, icono: '👟', tipo: 'zapatos' },
-        { id: 'botas', nombre: 'Botas de Cuero', precio: 45, icono: '👢', tipo: 'botas' },
-        { id: 'sandalias', nombre: 'Sandalias', precio: 20, icono: '👡', tipo: 'sandalias' }
-      ]
-    },
-    {
-      id: 'accesorios',
-      nombre: '🧢 Accesorios',
-      items: [
-        { id: 'gorra', nombre: 'Gorra', precio: 12, icono: '🧢', tipo: 'accesorio' },
-        { id: 'bufanda', nombre: 'Bufanda', precio: 18, icono: '🧣', tipo: 'accesorio' },
-        { id: 'gafas', nombre: 'Gafas de Sol', precio: 22, icono: '🕶️', tipo: 'accesorio' },
-        { id: 'mochila', nombre: 'Mochila', precio: 28, icono: '🎒', tipo: 'accesorio' }
-      ]
-    },
-    {
-      id: 'especiales',
-      nombre: '⭐ Items Especiales',
-      items: [
-        { id: 'armadura', nombre: 'Armadura Legendaria', precio: 100, icono: '🛡️', tipo: 'especial' },
-        { id: 'corona', nombre: 'Corona Real', precio: 80, icono: '👑', tipo: 'especial' },
-        { id: 'varita', nombre: 'Varita Mágica', precio: 60, icono: '⚡', tipo: 'especial' }
+
       ]
     }
   ]
@@ -262,10 +64,7 @@ function renderizarTienda() {
 }
 
 // ====== SISTEMA DEL INVENTARIO ======
-let inventarioRopa = [
-
-];
-
+let inventarioRopa = [];
 let dragmas = 100;
 let itemAVender = null;
 let timersDesaparicion = {};
@@ -296,11 +95,11 @@ function inicializarInventario() {
 function actualizarInventario() {
   const contenedor = document.getElementById('inventario-ropa');
   contenedor.innerHTML = '';
-  
+
   inventarioRopa.forEach(item => {
     const slot = document.createElement('div');
     slot.className = `col-md-2 col-sm-3 col-4 mb-2 item-ropa ${item.estado === 'roto' ? 'item-roto' : ''}`;
-    
+
     let barraProgreso = '';
     if (item.estado === 'roto') {
       barraProgreso = `
@@ -309,7 +108,7 @@ function actualizarInventario() {
         </div>
       `;
     }
-    
+
     slot.innerHTML = `
       <div class="p-2 text-center position-relative" style="font-size: 0.8rem;">
         ${barraProgreso}
@@ -329,14 +128,14 @@ function actualizarInventario() {
         </div>
       </div>
     `;
-    
+
     contenedor.appendChild(slot);
-    
+
     if (item.estado === 'roto' && !timersDesaparicion[item.id]) {
       iniciarDesaparicion(item.id);
     }
   });
-  
+
   const slotsVacios = 9 - inventarioRopa.length;
   for (let i = 0; i < slotsVacios; i++) {
     const slotVacio = document.createElement('div');
@@ -349,23 +148,23 @@ function actualizarInventario() {
 function comprarItem(itemId, precio) {
   if (dragmas >= precio) {
     const itemData = mapeoItemsTienda[itemId];
-    
+
     if (itemData) {
       const nuevoItem = {
         id: Date.now(),
         ...itemData,
         estado: "bueno"
       };
-      
+
       inventarioRopa.push(nuevoItem);
       dragmas -= precio;
-      
+
       actualizarInventario();
       actualizarDragmas();
-      
+
       const modal = bootstrap.Modal.getInstance(document.getElementById('tiendaModal'));
       modal.hide();
-      
+
       mostrarMensaje(`¡Has comprado ${nuevoItem.nombre} por ${precio} dragmas!`, 'success');
     }
   } else {
@@ -411,14 +210,14 @@ function prepararVenta(id) {
 
 function calcularPrecioBase(item) {
   const preciosBase = {
-    'camiseta': 5, 'pantalon': 10, 'chaqueta': 15, 'zapatos': 12, 
+    'camiseta': 5, 'pantalon': 10, 'chaqueta': 15, 'zapatos': 12,
     'accesorio': 8, 'vestido': 12, 'botas': 18, 'sandalias': 8,
     'especial': 25
   };
   return preciosBase[item.tipo] || 5;
 }
 
-document.getElementById('confirmar-venta').addEventListener('click', function() {
+document.getElementById('confirmar-venta').addEventListener('click', function () {
   if (itemAVender) {
     const precio = parseInt(document.getElementById('precio-prenda').value);
     if (precio > 0) {
@@ -454,3 +253,116 @@ function mostrarMensaje(mensaje, tipo) {
 }
 
 document.addEventListener('DOMContentLoaded', inicializarInventario);
+
+// ====== SISTEMA DE MENÚS DESPLEGABLES ======
+document.addEventListener("DOMContentLoaded", () => {
+  const audio = document.getElementById("bg-music");
+
+  // Esperar la primera interacción del usuario
+  document.body.addEventListener("click", () => {
+    audio.play().catch(err => console.log("El navegador bloqueó la reproducción automática:", err));
+  }, { once: true });
+});
+
+// Referencias a elementos del menú
+const infoBtn = document.getElementById("info-btn");
+const inventoryBtn = document.getElementById("inventory-btn");
+const mapBtn = document.getElementById("map-btn");
+
+const infoPanel = document.getElementById("info-panel");
+const inventoryPanel = document.getElementById("inventory-panel");
+const mapPanel = document.getElementById("map-panel");
+
+// Función para ocultar todos los paneles
+function hideAllPanels() {
+  infoPanel.style.display = "none";
+  inventoryPanel.style.display = "none";
+  mapPanel.style.display = "none";
+}
+
+// Alternar visibilidad de paneles
+infoBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (infoPanel.style.display === "block") {
+    infoPanel.style.display = "none";
+  } else {
+    hideAllPanels();
+    infoPanel.style.display = "block";
+  }
+});
+
+inventoryBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (inventoryPanel.style.display === "block") {
+    inventoryPanel.style.display = "none";
+  } else {
+    hideAllPanels();
+    inventoryPanel.style.display = "block";
+  }
+});
+
+mapBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (mapPanel.style.display === "block") {
+    mapPanel.style.display = "none";
+  } else {
+    hideAllPanels();
+    mapPanel.style.display = "block";
+  }
+});
+
+// Cerrar paneles al hacer clic fuera
+document.addEventListener("click", () => {
+  hideAllPanels();
+});
+
+// Evitar que los paneles se cierren al hacer clic dentro de ellos
+document.querySelectorAll(".menu-content").forEach(panel => {
+  panel.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+});
+
+// ====== SISTEMA DE CLIC DERECHO EN IMAGEN ======
+document.addEventListener('DOMContentLoaded', function () {
+  const image = document.getElementById('rightClickImage');
+  let touchTimer;
+
+  // Detectar toque largo para simular clic derecho
+  image.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    touchTimer = setTimeout(() => {
+      // Disparar evento de clic derecho
+      const rightClickEvent = new MouseEvent('contextmenu', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        button: 2, // Botón derecho
+        buttons: 2
+      });
+      image.dispatchEvent(rightClickEvent);
+    }, 80); // 500ms = toque largo
+  });
+
+  // Cancelar si el usuario levanta el dedo rápido
+  image.addEventListener('touchend', function (e) {
+    clearTimeout(touchTimer);
+  });
+
+  // Cancelar si el usuario mueve el dedo
+  image.addEventListener('touchmove', function (e) {
+    clearTimeout(touchTimer);
+  });
+
+  // Manejar el clic derecho (nativo del navegador)
+  image.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    // Aquí se abrirá el menú contextual nativo del navegador
+    // o puedes mostrar tu propio menú personalizado
+    console.log('Click derecho activado en la imagen');
+
+    // Para forzar el menú nativo (depende del navegador)
+    // Esto puede no funcionar en todos los navegadores móviles
+    // debido a restricciones de seguridad
+  });
+});

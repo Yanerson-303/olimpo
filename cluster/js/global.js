@@ -1,6 +1,5 @@
 /* ====== JAVASCRIPT GLOBAL - SISTEMA EXPANDIDO ====== */
 /* Versión: 2.0 - Sistema completo con dragmas y gestión avanzada */
-/* Cambio futuro: Implementar API REST y base de datos local */
 
 /* ====== ⚙️ VARIABLES GLOBALES ====== */
 let estado = {
@@ -20,10 +19,10 @@ let estado = {
 const LIMITES = {
   AMIGOS: 50,
   INFLUENCIA: 1500,
-  EJERCICIO_DIARIO: 4 // horas
+  EJERCICIO_DIARIO: 4
 };
 
-const CONVERSION_DRAGMA = 1000; // 1 dragma = 1000 COP
+const CONVERSION_DRAGMA = 1000;
 
 /* ====== 🏪 SISTEMA DE TIENDA ====== */
 function mostrarTienda() {
@@ -105,16 +104,14 @@ function registrarEjercicio() {
   let dragmasGanados = 0;
   let desgasteExtra = 0;
 
-  // Máximo 4 horas por día
   if (estado.ejercicioHoy + tiempoHoras > LIMITES.EJERCICIO_DIARIO) {
     const tiempoExtra = (estado.ejercicioHoy + tiempoHoras) - LIMITES.EJERCICIO_DIARIO;
-    desgasteExtra = Math.ceil(tiempoExtra * 2); // -1 por cada 30 min extra
+    desgasteExtra = Math.ceil(tiempoExtra * 2);
     showToast(`⚠️ Ejercicio excesivo: -${desgasteExtra} puntos de desgaste`);
   }
 
-  // Calcular dragmas (máximo por 4 horas)
   const tiempoEfectivo = Math.min(tiempoHoras, LIMITES.EJERCICIO_DIARIO - estado.ejercicioHoy);
-  dragmasGanados = Math.floor(tiempoEfectivo * 2); // 2 dragmas por hora
+  dragmasGanados = Math.floor(tiempoEfectivo * 2);
 
   estado.dragmas += dragmasGanados;
   estado.poder += Math.floor(tiempoEfectivo * 10);
@@ -156,15 +153,14 @@ function registrarEstudio() {
   const practicaHoras = convertirATiempoEstandar(practicaCantidad, practicaUnidad);
   const totalHoras = teoriaHoras + practicaHoras;
 
-  // Calcular puntos basados en equilibrio teoría/práctica
   let equilibrio = 0;
   if (totalHoras > 0) {
     const ratioTeoria = teoriaHoras / totalHoras;
     const ratioPractica = practicaHoras / totalHoras;
-    equilibrio = 1 - Math.abs(ratioTeoria - ratioPractica); // 1 = perfecto equilibrio
+    equilibrio = 1 - Math.abs(ratioTeoria - ratioPractica);
   }
 
-  const puntosBase = Math.floor(totalHoras * 0.5); // 0.5 puntos por hora
+  const puntosBase = Math.floor(totalHoras * 0.5);
   const puntosEquilibrio = Math.floor(puntosBase * equilibrio);
   const dragmasGanados = Math.floor(puntosEquilibrio * 0.8);
 
@@ -176,7 +172,6 @@ function registrarEstudio() {
   
   showToast(`📚 +${puntosEquilibrio} conocimiento, +${dragmasGanados} dragmas`);
   
-  // Limpiar formulario
   document.getElementById('teoria-cantidad').value = '';
   document.getElementById('practica-cantidad').value = '';
 }
@@ -195,7 +190,7 @@ function registrarInteracciones() {
   if (personas > 0) {
     estado.diasSinInteraccion = 0;
     estado.sangradoInfluencia = 0;
-    const influenciaGanada = Math.min(personas * 2, 20); // Máximo 20 por día
+    const influenciaGanada = Math.min(personas * 2, 20);
     estado.influencia += influenciaGanada;
     estado.dragmas += Math.floor(personas * 0.1);
     
@@ -205,7 +200,6 @@ function registrarInteracciones() {
     aplicarSangradoInfluencia();
   }
 
-  // Verificar si alcanzó el máximo
   if (estado.influencia >= LIMITES.INFLUENCIA) {
     estado.influencia = LIMITES.INFLUENCIA;
     document.getElementById('influencia-count').classList.add('max-level');
@@ -278,7 +272,6 @@ function agregarAmigo() {
   showToast(`👥 ${nombre} agregado al círculo ${circulo}`);
   document.getElementById('amigo-nombre').value = '';
   
-  // Cerrar modal
   bootstrap.Modal.getInstance(document.getElementById('agregarAmigoModal')).hide();
 }
 
@@ -301,7 +294,7 @@ function mostrarEliminarAmigo() {
   }
 
   const nombres = amigosCirculo.map(a => a.nombre).join(', ');
-  if (confirm(`¿Eliminar estos amigos del círculo ${circulo}?\n${nomes}\n\nEsta persona ha transcendido en tu vida.`)) {
+  if (confirm(`¿Eliminar estos amigos del círculo ${circulo}?\n${nombres}\n\nEsta persona ha transcendido en tu vida.`)) {
     estado.amigos = estado.amigos.filter(a => a.circulo != circulo);
     actualizarEstadisticas();
     guardarEstado();
@@ -349,7 +342,6 @@ function actualizarListaAmigos() {
     </div>
   `).join('');
 
-  // Verificar si alcanzó el máximo
   if (estado.amigos.length >= LIMITES.AMIGOS) {
     document.getElementById('amigos-count').classList.add('max-level');
     showToast("🎉 ¡Límite de amigos alcanzado! Honor 'Vida Sana' obtenido");
@@ -366,7 +358,6 @@ function calcularRango() {
   const { poder, conocimiento, influencia, amigos } = estado;
   const totalAmigos = amigos.length;
 
-  // Sistema de puntuación basado en múltiples factores
   const puntuacion = (poder * 0.3) + (conocimiento * 0.3) + (influencia * 0.2) + (totalAmigos * 2);
 
   if (puntuacion >= 1000) return { nombre: "ENIGMA ★", nivel: 5, desc: "Creador de realidades" };
@@ -382,7 +373,6 @@ function actualizarPiramide() {
   const rango = calcularRango();
   document.getElementById('posicion-actual').textContent = rango.nombre;
 
-  // Resetear todos los niveles
   for (let i = 0; i <= 5; i++) {
     const elemento = document.getElementById(`nivel-${['sin-virtud', 'omega', 'beta', 'delta', 'alfa', 'enigma'][i]}`);
     elemento.style.opacity = i === rango.nivel ? '1' : '0.5';
@@ -397,12 +387,10 @@ function actualizarEstadisticas() {
   document.getElementById('influencia-count').textContent = estado.influencia;
   document.getElementById('amigos-count').textContent = estado.amigos.length;
 
-  // Actualizar rangos
   const rango = calcularRango();
   document.getElementById('rango').textContent = rango.nombre;
   document.getElementById('descripcion').textContent = rango.desc;
 
-  // Efectos visuales para valores críticos
   const influenciaElem = document.getElementById('influencia-count');
   if (estado.diasSinInteraccion > 0) {
     influenciaElem.classList.add('warning-effect');
@@ -427,14 +415,11 @@ function cargarEstado() {
   if (guardado) {
     const datos = JSON.parse(guardado);
     
-    // Verificar si es un nuevo día
     const hoy = new Date().toISOString().split('T')[0];
     if (datos.ultimaFecha !== hoy) {
-      // Resetear contadores diarios
       datos.ejercicioHoy = 0;
       datos.interaccionesHoy = 0;
       
-      // Aplicar sangrado si no hubo interacciones el día anterior
       if (datos.interaccionesHoy === 0) {
         datos.diasSinInteraccion++;
         aplicarSangradoInfluencia();
@@ -462,9 +447,136 @@ document.addEventListener('DOMContentLoaded', function() {
 function verificarRecompensasDiarias() {
   const hoy = new Date().toISOString().split('T')[0];
   if (estado.ultimaFecha !== hoy) {
-    // Recompensa diaria por login
     estado.dragmas += 1;
     showToast("🎁 Recompensa diaria: +1 dragma");
     guardarEstado();
   }
+}
+
+/* ====== 🎪 ANIMACIONES Y EFECTOS ====== */
+function crearParticulas(cantidad) {
+  document.querySelectorAll('.particle').forEach(p => p.remove());
+
+  for (let i = 0; i < cantidad; i++) {
+    const particula = document.createElement('div');
+    particula.classList.add('particle');
+
+    const tamaño = Math.random() * 5 + 2;
+    particula.style.width = `${tamaño}px`;
+    particula.style.height = `${tamaño}px`;
+    particula.style.left = `${Math.random() * 100}vw`;
+    particula.style.top = `${Math.random() * 100}vh`;
+
+    const duracion = Math.random() * 10 + 5;
+    particula.style.animation = `float ${duracion}s infinite ease-in-out`;
+    particula.style.opacity = Math.random() * 0.7 + 0.3;
+
+    document.body.appendChild(particula);
+  }
+}
+
+/* ====== 📊 ESTADÍSTICAS AVANZADAS ====== */
+function mostrarEstadisticasDetalladas() {
+  const stats = `
+💰 Dragmas: ${estado.dragmas} (${estado.dragmas * CONVERSION_DRAGMA} COP)
+💪 Poder: ${estado.poder}
+📚 Conocimiento: ${estado.conocimiento}
+🗣️ Influencia: ${estado.influencia}/${LIMITES.INFLUENCIA}
+👥 Amigos: ${estado.amigos.length}/${LIMITES.AMIGOS}
+💀 Desgaste Físico: ${estado.desgasteFisico}
+⚡ Ejercicio Hoy: ${estado.ejercicioHoy.toFixed(1)}h/${LIMITES.EJERCICIO_DIARIO}h
+🗣️ Interacciones Hoy: ${estado.interaccionesHoy}
+📅 Días Sin Interacción: ${estado.diasSinInteraccion}
+💔 Sangrado Activo: ${estado.sangradoInfluencia}
+  `.trim();
+
+  alert(stats);
+}
+
+/* ====== 🎮 CONTROLES RÁPIDOS ====== */
+function agregarDragmasRapido(cantidad) {
+  estado.dragmas += cantidad;
+  actualizarEstadisticas();
+  guardarEstado();
+  showToast(`💰 +${cantidad} dragmas agregados`);
+  crearParticulas(20);
+}
+
+function resetearSistema() {
+  if (confirm('¿Estás seguro de que quieres reiniciar todo el sistema? Se perderán todos los datos.')) {
+    estado = {
+      dragmas: 0,
+      poder: 0,
+      conocimiento: 0,
+      influencia: 0,
+      amigos: [],
+      desgasteFisico: 0,
+      ejercicioHoy: 0,
+      interaccionesHoy: 0,
+      ultimaFecha: null,
+      sangradoInfluencia: 0,
+      diasSinInteraccion: 0
+    };
+    localStorage.removeItem('sistemaVirtud');
+    actualizarEstadisticas();
+    showToast('🔄 Sistema reiniciado completamente');
+  }
+}
+
+/* ====== 📈 SISTEMA DE LOGROS ====== */
+const logros = {
+  primerAmigo: { obtenido: false, nombre: "Primer Paso", desc: "Agrega tu primer amigo" },
+  maxAmigos: { obtenido: false, nombre: "Vida Sana", desc: "Alcanza el máximo de amigos" },
+  maxInfluencia: { obtenido: false, nombre: "Influencer", desc: "Alcanza la máxima influencia" },
+  enigma: { obtenido: false, nombre: "Sabio", desc: "Alcanza el rango ENIGMA" }
+};
+
+function verificarLogros() {
+  if (estado.amigos.length >= 1 && !logros.primerAmigo.obtenido) {
+    logros.primerAmigo.obtenido = true;
+    showToast(`🎉 Logro desbloqueado: ${logros.primerAmigo.nombre}`);
+  }
+
+  if (estado.amigos.length >= LIMITES.AMIGOS && !logros.maxAmigos.obtenido) {
+    logros.maxAmigos.obtenido = true;
+    showToast(`🎉 Logro desbloqueado: ${logros.maxAmigos.nombre}`);
+  }
+
+  if (estado.influencia >= LIMITES.INFLUENCIA && !logros.maxInfluencia.obtenido) {
+    logros.maxInfluencia.obtenido = true;
+    showToast(`🎉 Logro desbloqueado: ${logros.maxInfluencia.nombre}`);
+  }
+
+  const rango = calcularRango();
+  if (rango.nivel === 5 && !logros.enigma.obtenido) {
+    logros.enigma.obtenido = true;
+    showToast(`🎉 Logro desbloqueado: ${logros.enigma.nombre}`);
+  }
+}
+
+/* ====== 🕒 TEMPORIZADORES ====== */
+function iniciarTemporizadores() {
+  setInterval(verificarLogros, 30000);
+  setInterval(actualizarEstadisticas, 10000);
+  setInterval(() => {
+    if (estado.diasSinInteraccion > 0) {
+      aplicarSangradoInfluencia();
+      actualizarEstadisticas();
+    }
+  }, 60000);
+}
+
+/* ====== 🎯 INICIALIZACIÓN DE COMPONENTES ====== */
+document.addEventListener('DOMContentLoaded', function() {
+  iniciarTemporizadores();
+  crearParticulas(30);
+});
+
+function mostrarLogros() {
+  let mensaje = "🎯 Logros Obtenidos:\n\n";
+  for (const [key, logro] of Object.entries(logros)) {
+    const estado = logro.obtenido ? "✅" : "❌";
+    mensaje += `${estado} ${logro.nombre}: ${logro.desc}\n`;
+  }
+  alert(mensaje);
 }
