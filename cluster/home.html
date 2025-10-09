@@ -16,46 +16,59 @@
   <div class="light-effect light-1"></div>
   <div class="light-effect light-2"></div>
   <div class="light-effect light-3"></div>
-<!-- 🎵 Música de fondo simultánea -->
+
+
+<!-- 🎵 Música de fondo simultánea y compatible -->
 <audio id="bg-music1" src="data/sound/fuego.mp3" preload="auto" loop></audio>
 <audio id="bg-music2" src="data/sound/aura.mp3" preload="auto" loop></audio>
 
 <script>
-window.addEventListener("load", () => {
+document.addEventListener("DOMContentLoaded", () => {
   const audio1 = document.getElementById("bg-music1");
   const audio2 = document.getElementById("bg-music2");
 
-  // Iniciar en silencio para evitar bloqueo
+  // Inicializar en silencio (previene bloqueos automáticos)
   audio1.volume = 0;
   audio2.volume = 0;
 
-  Promise.all([audio1.play(), audio2.play()])
-    .then(() => {
-      console.log("Reproducción silenciosa iniciada de ambos audios");
+  // Función para reproducir ambos audios con fundido de entrada
+  const playAudios = () => {
+    Promise.all([audio1.play(), audio2.play()])
+      .then(() => {
+        console.log("🔊 Reproducción iniciada correctamente");
 
-      // Subir volumen suavemente después de 1.5 segundos
-      setTimeout(() => {
-        const fadeIn = setInterval(() => {
-          if (audio1.volume < 1) {
-            audio1.volume = Math.min(audio1.volume + 0.05, 1);
-            audio2.volume = Math.min(audio2.volume + 0.05, 1);
-          } else {
-            clearInterval(fadeIn);
+        // Efecto de fade-in (subida gradual del volumen)
+        let vol = 0;
+        const fade = setInterval(() => {
+          vol += 0.05;
+          if (vol >= 1) {
+            vol = 1;
+            clearInterval(fade);
           }
+          audio1.volume = vol;
+          audio2.volume = vol;
         }, 200);
-      }, 1500);
-    })
-    .catch(err => {
-      console.warn("El navegador bloqueó la reproducción automática:", err);
-      // Si el navegador bloquea, escuchar primer clic para activarlos
-      document.body.addEventListener("click", () => {
-        audio1.play();
-        audio2.play();
-      }, { once: true });
-    });
+      })
+      .catch(err => {
+        console.warn("⚠️ Error al reproducir automáticamente:", err);
+      });
+  };
+
+  // Intentar reproducir automáticamente al cargar
+  playAudios();
+
+  // En caso de bloqueo (móviles o navegadores estrictos)
+  const enableOnUserInteraction = () => {
+    playAudios();
+    document.removeEventListener("click", enableOnUserInteraction);
+    document.removeEventListener("touchstart", enableOnUserInteraction);
+  };
+
+  // Detectar primer clic o toque en pantalla
+  document.addEventListener("click", enableOnUserInteraction, { once: true });
+  document.addEventListener("touchstart", enableOnUserInteraction, { once: true });
 });
 </script>
-
 
 <!-- ====== 🎯 CABECERA DE CONTROL CON BOOTSTRAP ====== -->
 <header class="control-header container-fluid py-2  text-white">
