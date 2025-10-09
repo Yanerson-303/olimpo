@@ -299,7 +299,7 @@ function actualizarInventario() {
   
   inventarioRopa.forEach(item => {
     const slot = document.createElement('div');
-    slot.className = `col-md-4 col-sm-6 mb-3 item-ropa ${item.estado === 'roto' ? 'item-roto' : ''}`;
+    slot.className = `col-md-2 col-sm-3 col-4 mb-2 item-ropa ${item.estado === 'roto' ? 'item-roto' : ''}`;
     
     let barraProgreso = '';
     if (item.estado === 'roto') {
@@ -311,18 +311,19 @@ function actualizarInventario() {
     }
     
     slot.innerHTML = `
-      <div class="p-3 text-center position-relative">
+      <div class="p-2 text-center position-relative" style="font-size: 0.8rem;">
         ${barraProgreso}
-        <div class="icono-ropa">${item.icono}</div>
-        <h6 class="mb-1">${item.nombre}</h6>
-        <small class="text-muted">${item.tipo}</small>
-        <div class="mt-2 d-flex justify-content-center gap-1">
-          <button class="btn btn-sm btn-danger btn-inventario" onclick="eliminarRopa(${item.id})">
+        <div class="icono-ropa" style="font-size: 1.5rem;">${item.icono}</div>
+        <h6 class="mb-1" style="font-size: 0.7rem;">${item.nombre}</h6>
+        <small class="text-muted" style="font-size: 0.6rem;">${item.tipo}</small>
+        <div class="mt-1 d-flex flex-wrap justify-content-center gap-1">
+          <button class="btn btn-sm btn-danger btn-inventario" onclick="eliminarRopa(${item.id})" style="font-size: 0.6rem; padding: 0.1rem 0.3rem;">
             🗑️ Eliminar
           </button>
           <button class="btn btn-sm btn-warning btn-inventario" 
                   onclick="prepararVenta(${item.id})" 
-                  ${item.estado === 'roto' ? 'disabled' : ''}>
+                  ${item.estado === 'roto' ? 'disabled' : ''}
+                  style="font-size: 0.3rem; padding: 0.5rem 0.6rem;">
             💰 Vender
           </button>
         </div>
@@ -339,8 +340,8 @@ function actualizarInventario() {
   const slotsVacios = 9 - inventarioRopa.length;
   for (let i = 0; i < slotsVacios; i++) {
     const slotVacio = document.createElement('div');
-    slotVacio.className = 'col-md-4 col-sm-6 mb-3 slot-vacio';
-    slotVacio.innerHTML = '<span>Vacío</span>';
+    slotVacio.className = 'col-md-2 col-sm-3 col-4 mb-2 slot-vacio';
+    slotVacio.innerHTML = '<div class="p-2 text-center" style="font-size: 0.8rem;"><span style="font-size: 0.7rem;">Vacío</span></div>';
     contenedor.appendChild(slotVacio);
   }
 }
