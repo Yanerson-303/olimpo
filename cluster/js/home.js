@@ -513,3 +513,106 @@ document.addEventListener('DOMContentLoaded', inicializarInventario);
 // Ejemplo 3: Agregar una categoría completa
 // agregarCategoriaTienda('accesorios', '🎩 Accesorios', []);
 // SistemaItems.agregarItem('cinturon', 'Cinturón de Cuero', 'accesorio', '⛓️', 18, 'accesorios');
+
+
+// Referencias a elementos
+const infoBtn = document.getElementById("info-btn");
+const inventoryBtn = document.getElementById("inventory-btn");
+const mapBtn = document.getElementById("map-btn");
+
+const infoPanel = document.getElementById("info-panel");
+const inventoryPanel = document.getElementById("inventory-panel");
+const mapPanel = document.getElementById("map-panel");
+
+// Función para ocultar todos los paneles
+function hideAllPanels() {
+  infoPanel.style.display = "none";
+  inventoryPanel.style.display = "none";
+  mapPanel.style.display = "none";
+}
+
+// Alternar visibilidad de paneles
+infoBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (infoPanel.style.display === "block") {
+    infoPanel.style.display = "none";
+  } else {
+    hideAllPanels();
+    infoPanel.style.display = "block";
+  }
+});
+
+inventoryBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (inventoryPanel.style.display === "block") {
+    inventoryPanel.style.display = "none";
+  } else {
+    hideAllPanels();
+    inventoryPanel.style.display = "block";
+  }
+});
+
+mapBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (mapPanel.style.display === "block") {
+    mapPanel.style.display = "none";
+  } else {
+    hideAllPanels();
+    mapPanel.style.display = "block";
+  }
+});
+
+// Cerrar paneles al hacer clic fuera
+document.addEventListener("click", () => {
+  hideAllPanels();
+});
+
+// Evitar que los paneles se cierren al hacer clic dentro de ellos
+document.querySelectorAll(".menu-content").forEach(panel => {
+  panel.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const image = document.getElementById('rightClickImage');
+  let touchTimer;
+
+  // Detectar toque largo para simular clic derecho
+  image.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    touchTimer = setTimeout(() => {
+      // Disparar evento de clic derecho
+      const rightClickEvent = new MouseEvent('contextmenu', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        button: 2, // Botón derecho
+        buttons: 2
+      });
+      image.dispatchEvent(rightClickEvent);
+    }, 80); // 500ms = toque largo
+  });
+
+  // Cancelar si el usuario levanta el dedo rápido
+  image.addEventListener('touchend', function (e) {
+    clearTimeout(touchTimer);
+  });
+
+  // Cancelar si el usuario mueve el dedo
+  image.addEventListener('touchmove', function (e) {
+    clearTimeout(touchTimer);
+  });
+
+  // Manejar el clic derecho (nativo del navegador)
+  image.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    // Aquí se abrirá el menú contextual nativo del navegador
+    // o puedes mostrar tu propio menú personalizado
+    console.log('Click derecho activado en la imagen');
+
+    // Para forzar el menú nativo (depende del navegador)
+    // Esto puede no funcionar en todos los navegadores móviles
+    // debido a restricciones de seguridad
+  });
+});

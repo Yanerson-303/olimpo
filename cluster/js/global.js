@@ -23,6 +23,18 @@ const LIMITES = {
   EJERCICIO_DIARIO: 4 // horas
 };
 
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const audio = document.getElementById("bg-music");
+
+  // Esperar la primera interacción del usuario
+  document.body.addEventListener("click", () => {
+    audio.play().catch(err => console.log("El navegador bloqueó la reproducción automática:", err));
+  }, { once: true });
+});
+
+
 const CONVERSION_DRAGMA = 1000; // 1 dragma = 1000 COP
 
 /* ====== 🏪 SISTEMA DE TIENDA ====== */

@@ -487,3 +487,125 @@
   padding-bottom: 5px;
   margin-bottom: 10px;
 }
+
+
+        /* 🔘 Botones flotantes */
+        .btn-floating {
+            position: fixed;
+            left: 15px;
+            background-color: #00ff0000;
+            color: black;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px #3e3306;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-floating:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px #3e3306;;
+        }
+
+        /* Posicionamiento de botones - CORREGIDO */
+        #info-btn {
+            top: 35%;
+        }
+
+        #inventory-btn {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #map-btn {
+            top: 60%;
+        }
+
+        /* 🔹 Contenedores del menú emergente */
+        .menu-content {
+            position: fixed;
+            left: 20%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            border: 1% solid #3e3306;
+            border-radius: 12px;
+            padding: 1%;
+            width: 35em;
+            display: none;
+            z-index: 999;
+            backdrop-filter: blur(6%);
+        }
+
+        /* Estilos de texto */
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-primary {
+            color: #3e3306;
+        }
+        
+        .text-info {
+            color: #00ccff;
+        }
+        
+        .text-warning {
+            color: #ffcc00;
+        }
+        
+        .text-light {
+            color: #f0f0f0;
+        }
+        
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .small {
+            font-size: 0.875rem;
+        }
+        
+        .shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Estilos específicos para el mapa */
+        #map-container {
+            height: 200px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3e3306;;
+            border: 1px solid #3e3306;;
+        }
+        
+        /* Estilos para el inventario */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 10fr);
+            gap: 100em;
+            margin-top: 100em;
+        }
+        
+        .inventory-slot {
+            background-color: #1a1a1a;
+            border: 1% solid #3e3306;;
+            border-radius: 1%;
+            height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3e3306;;
+        }
