@@ -9,6 +9,151 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/global.css">
   <link rel="stylesheet" href="styles/home.css">
+ 
+  <style>
+    /* Estilos para el sistema de racha y efecto de fuego */
+    .fire-container {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .fire-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120%;
+      height: 120%;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.8;
+      filter: blur(10px);
+      transition: all 0.5s ease;
+      pointer-events: none;
+    }
+    
+    .streak-counter {
+      background: linear-gradient(135deg, #ff9500, #ff5e00);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(255, 94, 0, 0.4);
+      margin: 10px 0;
+      display: inline-block;
+    }
+    
+    .missions-btn {
+      background: linear-gradient(135deg, #4a90e2, #2b5cb6);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(43, 92, 182, 0.4);
+      margin-top: 10px;
+    }
+    
+    .missions-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(43, 92, 182, 0.6);
+    }
+    
+    /* Colores para diferentes niveles de racha */
+    .fire-level-1 { background: radial-gradient(circle, #ff9500, #ff5e00, #ff3300); }
+    .fire-level-2 { 
+      width: 140%; 
+      height: 140%; 
+      background: radial-gradient(circle, #ff9500, #ff5e00, #ff3300); 
+    }
+    .fire-level-3 { 
+      width: 160%; 
+      height: 160%; 
+      background: radial-gradient(circle, #ff9500, #ff5e00, #ff3300); 
+    }
+    .fire-level-4 { 
+      width: 160%; 
+      height: 160%; 
+      background: radial-gradient(circle, #ff0000, #cc0000, #990000); 
+    }
+    .fire-level-5 { 
+      width: 170%; 
+      height: 170%; 
+      background: radial-gradient(circle, #ff0000, #cc0000, #990000); 
+    }
+    .fire-level-6 { 
+      width: 170%; 
+      height: 170%; 
+      background: radial-gradient(circle, #ff0000, #0000ff, #990099); 
+    }
+    .fire-level-7 { 
+      width: 180%; 
+      height: 180%; 
+      background: radial-gradient(circle, #0000ff, #0044cc, #000099); 
+    }
+    .fire-level-8 { 
+      width: 190%; 
+      height: 190%; 
+      background: radial-gradient(circle, #0000ff, #0044cc, #000099); 
+      filter: blur(15px) brightness(1.2);
+    }
+    .fire-level-9 { 
+      width: 200%; 
+      height: 200%; 
+      background: radial-gradient(circle, #0000ff, #0044cc, #000099); 
+      filter: blur(20px) brightness(1.3);
+    }
+    /* Continúa hasta nivel 30... */
+    .fire-level-30 { 
+      width: 250%; 
+      height: 250%; 
+      background: radial-gradient(circle, #ffffff, #f0f0f0, #cccccc); 
+      filter: blur(25px) brightness(1.5);
+    }
+    
+    .olympus-flame {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: gold;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+      font-size: 1.2rem;
+    }
+    
+    /* Estilos para el modal de misiones diarias */
+    .mission-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-left: 4px solid #ff9500;
+    }
+    
+    .mission-completed {
+      border-left-color: #4CAF50;
+      opacity: 0.7;
+    }
+    
+    .mission-progress {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    
+    .mission-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ff9500, #ff5e00);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+  </style>
+  
 </head>
 
 <body class="bg-light">
@@ -19,7 +164,6 @@
   <!-- Música de fondo -->
   <audio id="bg-music" src="data/sound/fuego.mp3" preload="auto" loop></audio>
   <audio id="bg-music" src="data/sound/aura.mp3" preload="auto" loop></audio>
-
 
   <div class="bd-example m-0 border-0 bd-example-row">
     <div class="container text-center">
@@ -67,8 +211,6 @@
       </div>
     </div>
   </div>
-
-
 
   <!-- 📬 Botón flotante con icono de buzón para información -->
   <button id="info-btn" class="btn-floating" title="Información">
@@ -125,8 +267,6 @@
       <p>📍 Ubicación: Ciudad Central</p>
     </div>
   </div>
-
-
 
   <!-- ====== 💰 ESTADÍSTICAS (Centro) ====== -->
   <div class="col-12 col-md-6 col-lg-8 mb-2 mb-md-0">
@@ -193,12 +333,22 @@
     </div>
   </div>
 
-
   <!-- ====== 🏛️ CONTENIDO CENTRAL ====== -->
   <div class="main-content">
-    <img src="data/img/casco-logo.png" alt="Escudo Romano" class="center-image" id="rightClickImage">
+    <div class="fire-container">
+      <div id="fire-effect" class="fire-effect"></div>
+      <img src="data/img/casco-logo.png" alt="Escudo Romano" class="center-image" id="rightClickImage">
+      <div id="olympus-flame" class="olympus-flame" style="display: none;">La Llama del Olimpo</div>
+    </div>
+    
+    <!-- Contador de racha y botón de misiones -->
+    <div class="text-center mt-3">
+      <div class="streak-counter" id="streak-counter">
+        Racha: <span id="streak-days">0</span> días
+      </div>
+      <button class="missions-btn" onclick="mostrarMisionesDiarias()">Misiones del Día</button>
+    </div>
   </div>
-
 
   <!-- ====== 🛒 MODAL VENDER ====== -->
   <div class="modal fade" id="venderModal" tabindex="-1">
@@ -417,6 +567,26 @@
     </div>
   </div>
 
+  <!-- ====== 📋 MODAL MISIONES DIARIAS ====== -->
+  <div class="modal fade" id="misionesDiariasModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content roman-border">
+        <div class="modal-header">
+          <h5 class="modal-title">📋 Misiones Diarias</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info">
+            <p class="mb-0">Completa al menos una misión diaria para mantener tu racha. Cada misión completada otorga 1 punto de racha.</p>
+          </div>
+          <div id="lista-misiones-diarias">
+            <!-- Las misiones se cargarán aquí dinámicamente -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ====== 🔔 TOASTS ====== -->
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="toast" class="toast align-items-center text-bg-dark border-0" role="alert">
@@ -426,10 +596,261 @@
       </div>
     </div>
   </div>
-  </main>
 
   <script src="js/global.js"></script>
   <script src="js/home.js"></script>
+  <script>
+    // Sistema de racha y efecto de fuego
+    let streakData = {
+      currentStreak: 0,
+      lastCompletedDate: null,
+      dailyMissions: {
+        ejercicio: { objetivo: 10, completado: 0, tipo: 'poder' },
+        estudio: { objetivo: 10, completado: 0, tipo: 'conocimiento' },
+        // Puedes agregar más misiones aquí
+      }
+    };
+
+    // Inicializar el sistema de racha
+    function initializeStreakSystem() {
+      // Cargar datos desde localStorage
+      const savedStreak = localStorage.getItem('streakData');
+      if (savedStreak) {
+        streakData = JSON.parse(savedStreak);
+        
+        // Verificar si la última fecha completada es de ayer
+        const today = new Date().toDateString();
+        const lastDate = new Date(streakData.lastCompletedDate).toDateString();
+        
+        if (lastDate !== today) {
+          // Verificar si fue ayer (para mantener la racha)
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          
+          if (lastDate !== yesterday.toDateString()) {
+            // No fue ayer, reiniciar racha
+            streakData.currentStreak = 0;
+          }
+          
+          // Reiniciar misiones diarias
+          resetDailyMissions();
+        }
+      }
+      
+      updateStreakDisplay();
+      updateFireEffect();
+    }
+
+    // Reiniciar misiones diarias
+    function resetDailyMissions() {
+      for (let mission in streakData.dailyMissions) {
+        streakData.dailyMissions[mission].completado = 0;
+      }
+      saveStreakData();
+    }
+
+    // Guardar datos de racha
+    function saveStreakData() {
+      localStorage.setItem('streakData', JSON.stringify(streakData));
+    }
+
+    // Actualizar contador de racha
+    function updateStreakDisplay() {
+      document.getElementById('streak-days').textContent = streakData.currentStreak;
+    }
+
+    // Actualizar efecto de fuego según la racha
+    function updateFireEffect() {
+      const fireEffect = document.getElementById('fire-effect');
+      const olympusFlame = document.getElementById('olympus-flame');
+      
+      // Remover todas las clases de nivel anteriores
+      fireEffect.className = 'fire-effect';
+      
+      // Aplicar clase según el nivel de racha
+      if (streakData.currentStreak >= 30) {
+        fireEffect.classList.add('fire-level-30');
+        olympusFlame.style.display = 'block';
+      } else if (streakData.currentStreak >= 8) {
+        fireEffect.classList.add('fire-level-' + streakData.currentStreak);
+        olympusFlame.style.display = 'none';
+      } else if (streakData.currentStreak > 0) {
+        fireEffect.classList.add('fire-level-' + streakData.currentStreak);
+        olympusFlame.style.display = 'none';
+      }
+    }
+
+    // Completar misión
+    function completeMission(missionType, progress) {
+      if (streakData.dailyMissions[missionType]) {
+        streakData.dailyMissions[missionType].completado += progress;
+        
+        // Verificar si se completó la misión
+        if (streakData.dailyMissions[missionType].completado >= streakData.dailyMissions[missionType].objetivo) {
+          streakData.dailyMissions[missionType].completado = streakData.dailyMissions[missionType].objetivo;
+          
+          // Verificar si es la primera misión completada hoy
+          const today = new Date().toDateString();
+          if (streakData.lastCompletedDate !== today) {
+            streakData.currentStreak++;
+            streakData.lastCompletedDate = today;
+            
+            // Mostrar notificación
+            showToast(`¡Racha aumentada! Ahora tienes ${streakData.currentStreak} días.`, 'success');
+          }
+          
+          saveStreakData();
+          updateStreakDisplay();
+          updateFireEffect();
+        }
+        
+        // Actualizar estadísticas según el tipo de misión
+        updateStats(streakData.dailyMissions[missionType].tipo, progress);
+        
+        saveStreakData();
+        updateMissionsDisplay();
+      }
+    }
+
+    // Actualizar estadísticas
+    function updateStats(statType, amount) {
+      const statElement = document.getElementById(statType + '-count');
+      if (statElement) {
+        let currentValue = parseInt(statElement.textContent) || 0;
+        currentValue += amount;
+        statElement.textContent = currentValue;
+        
+        // Guardar en localStorage
+        localStorage.setItem(statType, currentValue);
+      }
+    }
+
+    // Mostrar modal de misiones diarias
+    function mostrarMisionesDiarias() {
+      updateMissionsDisplay();
+      const modal = new bootstrap.Modal(document.getElementById('misionesDiariasModal'));
+      modal.show();
+    }
+
+    // Actualizar visualización de misiones
+    function updateMissionsDisplay() {
+      const missionsContainer = document.getElementById('lista-misiones-diarias');
+      missionsContainer.innerHTML = '';
+      
+      for (let mission in streakData.dailyMissions) {
+        const missionData = streakData.dailyMissions[mission];
+        const progress = (missionData.completado / missionData.objetivo) * 100;
+        
+        const missionElement = document.createElement('div');
+        missionElement.className = `mission-item ${missionData.completado >= missionData.objetivo ? 'mission-completed' : ''}`;
+        
+        missionElement.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center">
+            <h6>${getMissionName(mission)}</h6>
+            <span>${missionData.completado}/${missionData.objetivo}</span>
+          </div>
+          <div class="mission-progress">
+            <div class="mission-progress-bar" style="width: ${progress}%"></div>
+          </div>
+          <small class="text-muted">Recompensa: +1 ${getStatName(missionData.tipo)} por minuto</small>
+        `;
+        
+        missionsContainer.appendChild(missionElement);
+      }
+    }
+
+    // Obtener nombre de misión
+    function getMissionName(missionType) {
+      const names = {
+        ejercicio: '💪 10 minutos de ejercicio',
+        estudio: '📚 10 minutos de estudio'
+        // Agregar más misiones aquí
+      };
+      
+      return names[missionType] || missionType;
+    }
+
+    // Obtener nombre de estadística
+    function getStatName(statType) {
+      const names = {
+        poder: 'Poder',
+        conocimiento: 'Conocimiento'
+        // Agregar más estadísticas aquí
+      };
+      
+      return names[statType] || statType;
+    }
+
+    // Mostrar notificación
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      const toastBody = document.getElementById('toast-body');
+      
+      toastBody.textContent = message;
+      toast.className = `toast align-items-center text-bg-${type} border-0`;
+      
+      const bsToast = new bootstrap.Toast(toast);
+      bsToast.show();
+    }
+
+    // Integración con funciones existentes
+    function registrarEjercicio() {
+      const tiempo = parseInt(document.getElementById('ejercicio-tiempo').value) || 0;
+      const unidad = document.getElementById('ejercicio-unidad').value;
+      
+      let minutos = tiempo;
+      if (unidad === 'horas') {
+        minutos = tiempo * 60;
+      }
+      
+      if (minutos > 0) {
+        completeMission('ejercicio', minutos);
+        showToast(`¡Ejercicio registrado! +${minutos} minutos`, 'success');
+      }
+    }
+
+    function registrarEstudio() {
+      const teoria = parseInt(document.getElementById('teoria-cantidad').value) || 0;
+      const practica = parseInt(document.getElementById('practica-cantidad').value) || 0;
+      const unidadTeoria = document.getElementById('teoria-unidad').value;
+      const unidadPractica = document.getElementById('practica-unidad').value;
+      
+      // Convertir a minutos (simplificado)
+      let minutos = 0;
+      
+      if (unidadTeoria === 'minutos') minutos += teoria;
+      else if (unidadTeoria === 'horas') minutos += teoria * 60;
+      // Para días, semanas y años, asumimos un valor fijo por simplicidad
+      else if (unidadTeoria === 'dias') minutos += teoria * 60; // 1 hora por día
+      else if (unidadTeoria === 'semanas') minutos += teoria * 300; // 5 horas por semana
+      else if (unidadTeoria === 'años') minutos += teoria * 1560; // 26 horas por año
+      
+      if (unidadPractica === 'minutos') minutos += practica;
+      else if (unidadPractica === 'horas') minutos += practica * 60;
+      else if (unidadPractica === 'dias') minutos += practica * 60;
+      else if (unidadPractica === 'semanas') minutos += practica * 300;
+      else if (unidadPractica === 'años') minutos += practica * 1560;
+      
+      if (minutos > 0) {
+        completeMission('estudio', minutos);
+        showToast(`¡Estudio registrado! +${minutos} minutos`, 'success');
+      }
+    }
+
+    // Inicializar cuando se carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeStreakSystem();
+      
+      // Cargar estadísticas guardadas
+      ['poder', 'conocimiento', 'influencia', 'dragmas'].forEach(stat => {
+        const savedValue = localStorage.getItem(stat);
+        if (savedValue) {
+          const element = document.getElementById(stat + '-count');
+          if (element) element.textContent = savedValue;
+        }
+      });
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
