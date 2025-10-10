@@ -616,3 +616,119 @@ document.addEventListener('DOMContentLoaded', function () {
     // debido a restricciones de seguridad
   });
 });
+const llama = document.getElementById('llamaOlimpica');
+const progresoBarra = document.getElementById('progresoLlama');
+const nivelTexto = document.getElementById('nivelLlama');
+const diasRachaTexto = document.getElementById('diasRacha');
+const proximoHitoTexto = document.getElementById('proximoHito');
+const insignias = document.getElementById('insignias');
+const mensajeMotivacional = document.getElementById('mensajeMotivacional');
+const hitosRacha = [1, 2, 4, 8, 16, 30];
+
+const mensajes = [
+  "🔥 Cada chispa de esfuerzo alimenta tu llama.",
+  "💪 Hoy es el día perfecto para mejorar.",
+  "🌟 Tu fuego interior guía tu grandeza.",
+  "🏛️ Persevera y la llama nunca se apagará.",
+  "⚔️ La disciplina vence al caos."
+];
+
+function abrirModalLlamaOlimpica() {
+  new bootstrap.Modal(document.getElementById('llamaOlimpicaModal')).show();
+  mensajeMotivacional.textContent = mensajes[Math.floor(Math.random() * mensajes.length)];
+}
+
+function obtenerFechaActual() {
+  const hoy = new Date();
+  return hoy.toISOString().split('T')[0];
+}
+
+function cargarLlamaOlimpica() {
+  const guardado = JSON.parse(localStorage.getItem('llamaOlimpica')) || {};
+  const hoy = obtenerFechaActual();
+  const rachaGuardada = JSON.parse(localStorage.getItem('rachaLlama')) || { diasConsecutivos: 0, ultimoDiaCompletado: null };
+
+  const ayer = new Date();
+  ayer.setDate(ayer.getDate() - 1);
+  const fechaAyer = ayer.toISOString().split('T')[0];
+
+  if (rachaGuardada.ultimoDiaCompletado !== fechaAyer && rachaGuardada.ultimoDiaCompletado !== hoy) {
+    rachaGuardada.diasConsecutivos = 0;
+  }
+
+  if (guardado.fecha === hoy) {
+    document.getElementById('tareaEjercicio').checked = guardado.ejercicio || false;
+    document.getElementById('tareaEstudio').checked = guardado.estudio || false;
+    document.getElementById('tareaTrabajo').checked = guardado.trabajo || false;
+    actualizarProgresoLlamaOlimpica();
+  } else {
+    localStorage.removeItem('llamaOlimpica');
+    reiniciarLlamaOlimpica();
+  }
+  actualizarInformacionRacha(rachaGuardada.diasConsecutivos);
+}
+
+function actualizarProgresoLlamaOlimpica() {
+  const ejercicio = document.getElementById('tareaEjercicio').checked;
+  const estudio = document.getElementById('tareaEstudio').checked;
+  const trabajo = document.getElementById('tareaTrabajo').checked;
+  const completadas = [ejercicio, estudio, trabajo].filter(Boolean).length;
+  const progreso = (completadas / 3) * 100;
+
+  progresoBarra.style.width = progreso + '%';
+  nivelTexto.textContent = completadas;
+
+  if (completadas === 3) actualizarRacha();
+
+  localStorage.setItem('llamaOlimpica', JSON.stringify({ fecha: obtenerFechaActual(), ejercicio, estudio, trabajo }));
+}
+
+function actualizarRacha() {
+  const hoy = obtenerFechaActual();
+  let racha = JSON.parse(localStorage.getItem('rachaLlama')) || { diasConsecutivos: 0, ultimoDiaCompletado: null };
+  if (racha.ultimoDiaCompletado === hoy) return;
+
+  const ayer = new Date();
+  ayer.setDate(ayer.getDate() - 1);
+  const fechaAyer = ayer.toISOString().split('T')[0];
+
+  if (racha.ultimoDiaCompletado === fechaAyer || racha.diasConsecutivos === 0) racha.diasConsecutivos++;
+  else racha.diasConsecutivos = 1;
+
+  racha.ultimoDiaCompletado = hoy;
+  localStorage.setItem('rachaLlama', JSON.stringify(racha));
+  actualizarInformacionRacha(racha.diasConsecutivos);
+}
+
+function actualizarInformacionRacha(diasRacha) {
+  diasRachaTexto.textContent = diasRacha;
+  const proximoHito = hitosRacha.find(h => h > diasRacha) || hitosRacha[hitosRacha.length - 1];
+  proximoHitoTexto.textContent = `Día ${proximoHito}`;
+  actualizarLlamaPorRacha(diasRacha);
+  actualizarInsignias(diasRacha);
+}
+
+function actualizarLlamaPorRacha(diasRacha) {
+  llama.className = 'fire-effect';
+  llama.style.opacity = '1';
+  if (hitosRacha.includes(diasRacha)) {
+    llama.classList.add(`fire-streak-${diasRacha}`);
+  }
+}
+
+function actualizarInsignias(dias) {
+  insignias.innerHTML = '';
+  hitosRacha.forEach(h => {
+    if (dias >= h) insignias.innerHTML += `<span class="badge-hito">🏅 Día ${h}</span>`;
+  });
+}
+
+function reiniciarLlamaOlimpica() {
+  document.getElementById('tareaEjercicio').checked = false;
+  document.getElementById('tareaEstudio').checked = false;
+  document.getElementById('tareaTrabajo').checked = false;
+  progresoBarra.style.width = '0%';
+  nivelTexto.textContent = '0';
+}
+
+window.addEventListener('load', cargarLlamaOlimpica);

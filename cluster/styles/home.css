@@ -500,8 +500,8 @@
             width: 55px;
             height: 55px;
             font-size: 1.8rem;
-            text-shadow: 0 0 10px #3e3306;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+            text-shadow: 0 0 10px rgba(255, 166, 0, 0.692);
+            box-shadow: 0 0 15px rgba(255, 166, 0, 0.692);
             cursor: pointer;
             z-index: 1000;
             transition: all 0.3s ease-in-out;
@@ -512,7 +512,7 @@
 
         .btn-floating:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 25px #3e3306;;
+            box-shadow: 0 0 25px rgba(255, 166, 0, 0.692);
         }
 
         /* Posicionamiento de botones - CORREGIDO */
@@ -609,3 +609,116 @@
             justify-content: center;
             color: #3e3306;;
         }
+
+        /* ==========================================================
+   🔥 EFECTO DE LLAMA OLÍMPICA EVOLUTIVA
+   ========================================================== */
+.fire-effect {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14em;
+  height: 13em;
+  background: radial-gradient(circle at 50% 80%, #2720207e 0%, #463c219d 40%, #663e18 70%, hsl(0, 100%, 30%) 100%);
+  border-radius: 70% 70% 20% 20% / 80% 80% 20% 20%;
+  opacity: 0;
+  filter: blur(12px) brightness(1.25) contrast(1.2) saturate(1.4);
+  animation: flameMove 1.6s infinite ease-in-out alternate;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: opacity 0.6s ease-in-out, transform 1s ease;
+}
+
+/* ✨ Movimiento ondulante */
+@keyframes flameMove {
+  0%   { transform: translate(-50%, -55%) scaleY(1); filter: blur(12px) brightness(1.1); }
+  25%  { transform: translate(-50%, -58%) scaleY(1.15); filter: blur(10px) brightness(1.3); }
+  50%  { transform: translate(-50%, -61%) scaleY(1.25); filter: blur(15px) brightness(1.5); }
+  75%  { transform: translate(-50%, -58%) scaleY(1.1); filter: blur(11px) brightness(1.2); }
+  100% { transform: translate(-50%, -55%) scaleY(1); filter: blur(13px) brightness(1.15); }
+}
+
+/* ==========================================================
+   🔥 NIVELES DE RACHA
+   ========================================================== */
+.fire-streak-1 { background: radial-gradient(circle at 50% 80%, #ffffffc4 0%, #0048ffbb 60%, #000428c5 100%); transform: scale(1); }
+.fire-streak-2 { background: radial-gradient(circle at 50% 80%, #e0edff 0%, #8a2eff 45%, #48026b 100%); transform: scale(1.1); }
+.fire-streak-4 { background: radial-gradient(circle at 50% 80%, #00ffd0 0%, #00ff66 40%, #00552a 100%); transform: scale(1.25); }
+.fire-streak-8 { background: radial-gradient(circle at 50% 80%, #fff7d6d2 0%, #ff4800 50%, #ff0303 100%); transform: scale(1.35); }
+.fire-streak-16 { background: radial-gradient(circle at 50% 80%, #ffffff 0%, #4b0132 30%, #1b0011 60%, #350014 100%); transform: scale(1.5); }
+.fire-streak-30 {
+  background: radial-gradient(circle at 50% 80%, #ffffff 0%, #ffffff 20%, #ffffff 50%, #ffffff 80%, #ffffff 100%);
+  transform: scale(1.7);
+}
+
+/* ✨ Imagen dentro de la llama */
+.main-content {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.center-image {
+  width: 80px;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 10px #ffbf00);
+}
+
+/* 🌟 Insignias visuales */
+.badge-hito {
+  font-size: 1.1em;
+  background: linear-gradient(45deg, #ffd700, #ff8c00);
+  color: #000;
+  border-radius: 10px;
+  padding: 4px 8px;
+  margin: 3px;
+  box-shadow: 0 0 6px #ffb400;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 4px #ffb400; }
+  to { box-shadow: 0 0 10px #fff6a1; }
+}
+
+.mission-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mission-points {
+  font-weight: bold;
+  color: #ffc107;
+}
+
+
+  /* ====== 🔥 Botón Flotante - Llama Olímpica ====== */
+  .btn-llama {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: linear-gradient(45deg, #ff440056, #ff7b0056);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 9999;
+    transition: all 0.3s ease;
+  }
+
+  .btn-llama:hover {
+    transform: scale(1.1);
+    background: linear-gradient(45deg, #ff440023, #ff7b002c);
+    box-shadow: 0 6px 16px rgba(255, 140, 0, 0.6);
+  }
+
+  .btn-llama:active {
+    transform: scale(0.95);
+  }

@@ -10,98 +10,6 @@
   <link rel="stylesheet" href="styles/global.css">
   <link rel="stylesheet" href="styles/home.css">
 </head>
-<style>
-/* ====== 🔥 EFECTO DE FUEGO EVOLUTIVO MULTICOLOR ====== */
-.fire-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  transition: transform 1.5s ease-in-out;
-}
-
-.fire-effect {
-  width: 14em;
-  height: 13em;
-  background: radial-gradient(circle at 50% 80%, 
-              #ffeb99 0%, 
-              #ff9900 40%, 
-              #cc3300 70%, 
-              #660000 100%);
-  border-radius: 70% 70% 20% 20% / 80% 80% 20% 20%;
-  opacity: 0.9;
-  filter: blur(12px) brightness(1.2);
-  animation: flameMove 1.5s infinite ease-in-out alternate;
-  mix-blend-mode: screen;
-  transition: all 1.5s ease-in-out;
-}
-
-/* Movimiento ondulante del fuego */
-@keyframes flameMove {
-  0% { transform: translateY(0) scaleY(1); filter: blur(10px) brightness(1); }
-  50% { transform: translateY(-5%) scaleY(1.2); filter: blur(14px) brightness(1.4); }
-  100% { transform: translateY(0) scaleY(1); filter: blur(12px) brightness(1.1); }
-}
-
-/* ==================== 🔥 EVOLUCIÓN DE COLOR Y TAMAÑO POR DÍA ==================== */
-
-
-.fire-level-1 .fire-effect {
-  filter: brightness(1.2) blur(10px);
-  background: radial-gradient(circle at 50% 80%, #ffcc66 0%, #ff6600 40%, #cc0000 70%, #330000 100%);
-}
-.fire-level-1 { transform: translate(-50%, -50%) scale(1); }
-
-
-.fire-level-2 .fire-effect {
-  filter: brightness(1.4) blur(10px);
-  background: radial-gradient(circle at 50% 80%, #ff9999 0%, #ff3300 40%, #cc0000 70%, #000000 100%);
-}
-.fire-level-2 { transform: translate(-50%, -50%) scale(1.2); }
-
-
-.fire-level-3 .fire-effect {
-  filter: brightness(3) blur(12px);
-  background: radial-gradient(circle at 50% 80%, #e97af3d0 0%, #c6a8ff 30%, #ff004c 60%, #ff0000 100%);
-}
-.fire-level-3 { transform: translate(-50%, -50%) scale(1.6); }
-
-/* Día 4 — cambio notorio a violeta/morado */
-.fire-level-4 .fire-effect {
-  filter: brightness(2) blur(13px);
-  background: radial-gradient(circle at 50% 80%, #99ffff 0%, #00ccff 30%, #0066ff 60%, #000033 100%);
-}
-.fire-level-4 { transform: translate(-50%, -50%) scale(2); }
-
-/* Día 8 — tonos azul eléctrico */
-.fire-level-8 .fire-effect {
-  filter: brightness(2.5) blur(14px);
-  background: radial-gradient(circle at 50% 80%, #ccffcc 0%, #33ff99 30%, #009966 70%, #001a00 100%);
-}
-.fire-level-8 { transform: translate(-50%, -50%) scale(2.2); }
-
-/* Día 16 — cambio a verde energía */
-.fire-level-16 .fire-effect {
-  filter: brightness(2.8) blur(15px);
-  background: radial-gradient(circle at 50% 80%, #e0ccff 0%, #bb66ff 30%, #6600cc 70%, #220044 100%);
-}
-.fire-level-16 { transform: translate(-50%, -50%) scale(2.7); }
-
-/* Día 30 — final blanco dorado (máximo brillo) */
-.fire-level-30 .fire-effect {
-  filter: brightness(3.5) blur(18px);
-  background: radial-gradient(circle at 50% 80%, #ffffff 0%, #fff6cc 40%, #ffeeaa 70%, #fff0bb 100%);
-}
-.fire-level-30 { transform: translate(-50%, -50%) scale(3); }
-
-/* Días intermedios — crecimiento progresivo */
-.fire-wrapper[data-day]:not(.fire-level-1):not(.fire-level-2):not(.fire-level-3):not(.fire-level-4):not(.fire-level-8):not(.fire-level-16):not(.fire-level-30) {
-  transform: translate(-50%, -50%) scale(calc(1 + (var(--day, 1) * 0.15)));
-  transition: all 1.2s ease-in-out;
-}
-</style>
-
 
 <body class="bg-light">
   <!-- Efectos de luces ambientales -->
@@ -111,7 +19,7 @@
   <!-- Música de fondo -->
   <audio id="bg-music" src="data/sound/fuego.mp3" preload="auto" loop></audio>
   <audio id="bg-music" src="data/sound/aura.mp3" preload="auto" loop></audio>
-<!-- ====== 🔥 ESTRUCTURA HTML ====== -->
+
 
   <div class="bd-example m-0 border-0 bd-example-row">
     <div class="container text-center">
@@ -121,7 +29,7 @@
           style="background-color: rgba(106, 114, 121, 0.25) !important; color: black; text-shadow: 0 0 10px #3e330639;">
           <div class="dropdown">
             <a href="#" class="d-block text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="data/img/perfil-anonimo.jpg" alt="Perfil" width="50em" height="50em" class="rounded-circle">
+              <img src="data/img/perfil-vasio.png" alt="Perfil" width="50em" height="50em" class="rounded-circle">
             </a>
             <ul class="dropdown-menu text-small shadow">
               <li><a class="dropdown-item" href="#"><i class="fas fa-plus-circle me-2"></i>Nuevo proyecto</a></li>
@@ -160,6 +68,8 @@
     </div>
   </div>
 
+
+
   <!-- 📬 Botón flotante con icono de buzón para información -->
   <button id="info-btn" class="btn-floating" title="Información">
     📬
@@ -180,8 +90,8 @@
     <h5 class="text-center text-primary mb-2">Información</h5>
     <p class="text-light small text-center">Actualizaciones recientes</p>
     <div class="update-list">
-      <p class="text-light small">• Nueva versión 2.2 disponible</p>
-      <p class="text-light small">• Corrección de errores menores</p>
+      <p class="text-light small">• Nueva versión 3.0 disponible</p>
+      <p class="text-light small">• llama del olimpo</p>
       <p class="text-light small">• Mejoras en el rendimiento</p>
     </div>
   </div>
@@ -215,6 +125,8 @@
       <p>📍 Ubicación: Ciudad Central</p>
     </div>
   </div>
+
+
 
   <!-- ====== 💰 ESTADÍSTICAS (Centro) ====== -->
   <div class="col-12 col-md-6 col-lg-8 mb-2 mb-md-0">
@@ -281,39 +193,84 @@
     </div>
   </div>
 
-<!-- ====== 🏛️ CONTENIDO CENTRAL ====== -->
-<div class="main-content text-center position-relative">
-  <div class="fire-container position-relative d-inline-block">
-    
-    <!-- 🔥 Efecto de fuego detrás del casco -->
-    <div class="fire-wrapper fire-level-1" id="fire">
-      <div class="fire-effect"></div>
+<!-- 🔥 BOTÓN PRINCIPAL -->
+<button class="btn-llama" onclick="abrirModalLlamaOlimpica()">🔥 Llama Olímpica</button>
+
+  <!-- 🔥 LLAMA -->
+
+
+    <div class="main-content">
+      <div>
+        <img src="data/img/casco-logo.png" alt="Escudo Romano" class="center-image" id="rightClickImage">
+      </div>
     </div>
 
-    <!-- 🏺 Imagen principal (por encima del fuego) -->
-    <img src="data/img/casco-logo.png" 
-         alt="Escudo Romano" 
-         class="center-image position-relative" 
-         id="rightClickImage" 
-         style="position: relative; z-index: 3; width: 180px;">
 
-    <!-- ✨ Texto de la llama -->
-    <div id="olympus-flame" 
-         class="olympus-flame text-light fw-bold mt-2" 
-         style="display: none; z-index: 4; position: relative;">
-      La Llama del Olimpo
+  <div id="llamaOlimpica" class=" fire-level-0">
+    <div class="main-content">
+      <div>
+
+      </div>
     </div>
   </div>
 
-  <!-- ====== 🎯 CONTADOR Y BOTÓN ====== -->
-  <div class="text-center mt-3">
-    <div class="streak-counter fw-bold text-light mb-2" id="streak-counter">
-      Racha: <span id="streak-days">0</span> días
-    </div>
-    <button class="btn btn-warning fw-bold px-4" onclick="mostrarMisionesDiarias()">Misiones del Día</button>
-  </div>
-</div>
+  <!-- 🏛️ MODAL -->
+  <div class="modal fade" id="llamaOlimpicaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header">
+          <h5 class="modal-title">🔥 Llama Olímpica - Misiones Diarias</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
 
+        <div class="modal-body">
+          <p>Completa tus misiones diarias para fortalecer tu fuego interior.</p>
+          <div id="mensajeMotivacional" class="mb-3 fst-italic text-warning"></div>
+
+          <!-- 🏃 Misiones -->
+          <div class="form-check text-start mb-2">
+            <input class="form-check-input" type="checkbox" id="tareaEjercicio" onchange="actualizarProgresoLlamaOlimpica()">
+            <label class="form-check-label mission-label" for="tareaEjercicio">
+              <span>🏃 Ejercicio físico</span><span class="mission-points">+10 🔥</span>
+            </label>
+          </div>
+
+          <div class="form-check text-start mb-2">
+            <input class="form-check-input" type="checkbox" id="tareaEstudio" onchange="actualizarProgresoLlamaOlimpica()">
+            <label class="form-check-label mission-label" for="tareaEstudio">
+              <span>📘 Estudiar 1 hora</span><span class="mission-points">+10 🧠</span>
+            </label>
+          </div>
+
+          <div class="form-check text-start mb-2">
+            <input class="form-check-input" type="checkbox" id="tareaTrabajo" onchange="actualizarProgresoLlamaOlimpica()">
+            <label class="form-check-label mission-label" for="tareaTrabajo">
+              <span>💼 Cumplir tareas laborales</span><span class="mission-points">+10 ⚙️</span>
+            </label>
+          </div>
+
+          <!-- Barra progreso -->
+          <div class="mt-3">
+            <p class="mb-1">Nivel de la llama: <span id="nivelLlama">0</span></p>
+            <div class="progress">
+              <div id="progresoLlama" class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Racha e insignias -->
+          <div class="mt-3 p-2 bg-secondary bg-opacity-25 rounded">
+            <p class="mb-1">🔥 Racha actual: <span id="diasRacha">0</span> días</p>
+            <p class="mb-0 small">Próximo hito: <span id="proximoHito">Día 1</span></p>
+            <div id="insignias" class="mt-2"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- ====== 🛒 MODAL VENDER ====== -->
   <div class="modal fade" id="venderModal" tabindex="-1">
     <div class="modal-dialog">
@@ -531,26 +488,6 @@
     </div>
   </div>
 
-  <!-- ====== 📋 MODAL MISIONES DIARIAS ====== -->
-  <div class="modal fade" id="misionesDiariasModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content roman-border">
-        <div class="modal-header">
-          <h5 class="modal-title">📋 Misiones Diarias</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <div class="alert alert-info">
-            <p class="mb-0">Completa al menos una misión diaria para mantener tu racha. Cada misión completada otorga 1 punto de racha.</p>
-          </div>
-          <div id="lista-misiones-diarias">
-            <!-- Las misiones se cargarán aquí dinámicamente -->
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- ====== 🔔 TOASTS ====== -->
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="toast" class="toast align-items-center text-bg-dark border-0" role="alert">
@@ -560,298 +497,10 @@
       </div>
     </div>
   </div>
+  </main>
 
   <script src="js/global.js"></script>
   <script src="js/home.js"></script>
-  <script>
-    // Sistema de racha y efecto de fuego
-    let streakData = {
-      currentStreak: 0,
-      lastCompletedDate: null,
-      lastFireLevel: 0, // Para detectar cambios de color
-      firstTimeIgnited: false, // Para controlar el efecto de primera vez
-      dailyMissions: {
-        ejercicio: { objetivo: 10, completado: 0, tipo: 'poder' },
-        estudio: { objetivo: 10, completado: 0, tipo: 'conocimiento' },
-      }
-    };
-
-    // Inicializar el sistema de racha
-    function initializeStreakSystem() {
-      // Cargar datos desde localStorage
-      const savedStreak = localStorage.getItem('streakData');
-      if (savedStreak) {
-        streakData = JSON.parse(savedStreak);
-        
-        // Verificar si la última fecha completada es de ayer
-        const today = new Date().toDateString();
-        const lastDate = new Date(streakData.lastCompletedDate).toDateString();
-        
-        if (lastDate !== today) {
-          // Verificar si fue ayer (para mantener la racha)
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          
-          if (lastDate !== yesterday.toDateString()) {
-            // No fue ayer, reiniciar racha
-            streakData.currentStreak = 0;
-          }
-          
-          // Reiniciar misiones diarias
-          resetDailyMissions();
-        }
-      }
-      
-      updateStreakDisplay();
-      updateFireEffect();
-    }
-
-    // Reiniciar misiones diarias
-    function resetDailyMissions() {
-      for (let mission in streakData.dailyMissions) {
-        streakData.dailyMissions[mission].completado = 0;
-      }
-      saveStreakData();
-    }
-
-    // Guardar datos de racha
-    function saveStreakData() {
-      localStorage.setItem('streakData', JSON.stringify(streakData));
-    }
-
-    // Actualizar contador de racha
-    function updateStreakDisplay() {
-      document.getElementById('streak-days').textContent = streakData.currentStreak;
-    }
-
-    // Actualizar efecto de fuego según la racha
-    function updateFireEffect() {
-      const fireEffect = document.getElementById('fire-effect');
-      const olympusFlame = document.getElementById('olympus-flame');
-      
-      // Determinar el nivel de fuego actual basado en la racha
-      let currentFireLevel = 0;
-      if (streakData.currentStreak >= 30) {
-        currentFireLevel = 30;
-        olympusFlame.style.display = 'block';
-      } else if (streakData.currentStreak >= 8) {
-        currentFireLevel = streakData.currentStreak;
-        olympusFlame.style.display = 'none';
-      } else if (streakData.currentStreak > 0) {
-        currentFireLevel = streakData.currentStreak;
-        olympusFlame.style.display = 'none';
-      }
-      
-      // Solo mostrar la llama si hay racha activa
-      if (streakData.currentStreak > 0) {
-        // Remover todas las clases de nivel anteriores
-        fireEffect.className = 'fire-effect';
-        
-        // Aplicar clase según el nivel de racha
-        if (currentFireLevel >= 30) {
-          fireEffect.classList.add('fire-level-30');
-        } else if (currentFireLevel >= 8) {
-          fireEffect.classList.add('fire-level-' + currentFireLevel);
-        } else if (currentFireLevel > 0) {
-          fireEffect.classList.add('fire-level-' + currentFireLevel);
-        }
-        
-        // Detectar si es la primera vez que se enciende
-        if (!streakData.firstTimeIgnited) {
-          fireEffect.classList.add('first-time');
-          streakData.firstTimeIgnited = true;
-          saveStreakData();
-        } 
-        // Detectar si cambió el color (nivel de fuego)
-        else if (streakData.lastFireLevel !== currentFireLevel) {
-          fireEffect.classList.add('color-change');
-          streakData.lastFireLevel = currentFireLevel;
-          saveStreakData();
-          
-          // Remover la clase después de la animación
-          setTimeout(() => {
-            fireEffect.classList.remove('color-change');
-          }, 1000);
-        }
-        
-        // Asegurar que la llama sea visible
-        fireEffect.style.opacity = '1';
-      } else {
-        // No hay racha activa, ocultar la llama
-        fireEffect.style.opacity = '0';
-        olympusFlame.style.display = 'none';
-      }
-    }
-
-    // Completar misión
-    function completeMission(missionType, progress) {
-      if (streakData.dailyMissions[missionType]) {
-        streakData.dailyMissions[missionType].completado += progress;
-        
-        // Verificar si se completó la misión
-        if (streakData.dailyMissions[missionType].completado >= streakData.dailyMissions[missionType].objetivo) {
-          streakData.dailyMissions[missionType].completado = streakData.dailyMissions[missionType].objetivo;
-          
-          // Verificar si es la primera misión completada hoy
-          const today = new Date().toDateString();
-          if (streakData.lastCompletedDate !== today) {
-            streakData.currentStreak++;
-            streakData.lastCompletedDate = today;
-            
-            // Mostrar notificación
-            showToast(`¡Racha aumentada! Ahora tienes ${streakData.currentStreak} días.`, 'success');
-          }
-          
-          saveStreakData();
-          updateStreakDisplay();
-          updateFireEffect();
-        }
-        
-        // Actualizar estadísticas según el tipo de misión
-        updateStats(streakData.dailyMissions[missionType].tipo, progress);
-        
-        saveStreakData();
-        updateMissionsDisplay();
-      }
-    }
-
-    // Actualizar estadísticas
-    function updateStats(statType, amount) {
-      const statElement = document.getElementById(statType + '-count');
-      if (statElement) {
-        let currentValue = parseInt(statElement.textContent) || 0;
-        currentValue += amount;
-        statElement.textContent = currentValue;
-        
-        // Guardar en localStorage
-        localStorage.setItem(statType, currentValue);
-      }
-    }
-
-    // Mostrar modal de misiones diarias
-    function mostrarMisionesDiarias() {
-      updateMissionsDisplay();
-      const modal = new bootstrap.Modal(document.getElementById('misionesDiariasModal'));
-      modal.show();
-    }
-
-    // Actualizar visualización de misiones
-    function updateMissionsDisplay() {
-      const missionsContainer = document.getElementById('lista-misiones-diarias');
-      missionsContainer.innerHTML = '';
-      
-      for (let mission in streakData.dailyMissions) {
-        const missionData = streakData.dailyMissions[mission];
-        const progress = (missionData.completado / missionData.objetivo) * 100;
-        
-        const missionElement = document.createElement('div');
-        missionElement.className = `mission-item ${missionData.completado >= missionData.objetivo ? 'mission-completed' : ''}`;
-        
-        missionElement.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center">
-            <h6>${getMissionName(mission)}</h6>
-            <span>${missionData.completado}/${missionData.objetivo}</span>
-          </div>
-          <div class="mission-progress">
-            <div class="mission-progress-bar" style="width: ${progress}%"></div>
-          </div>
-          <small class="text-muted">Recompensa: +1 ${getStatName(missionData.tipo)} por minuto</small>
-        `;
-        
-        missionsContainer.appendChild(missionElement);
-      }
-    }
-
-    // Obtener nombre de misión
-    function getMissionName(missionType) {
-      const names = {
-        ejercicio: '💪 10 minutos de ejercicio',
-        estudio: '📚 10 minutos de estudio'
-      };
-      
-      return names[missionType] || missionType;
-    }
-
-    // Obtener nombre de estadística
-    function getStatName(statType) {
-      const names = {
-        poder: 'Poder',
-        conocimiento: 'Conocimiento'
-      };
-      
-      return names[statType] || statType;
-    }
-
-    // Mostrar notificación
-    function showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
-      const toastBody = document.getElementById('toast-body');
-      
-      toastBody.textContent = message;
-      toast.className = `toast align-items-center text-bg-${type} border-0`;
-      
-      const bsToast = new bootstrap.Toast(toast);
-      bsToast.show();
-    }
-
-    // Integración con funciones existentes
-    function registrarEjercicio() {
-      const tiempo = parseInt(document.getElementById('ejercicio-tiempo').value) || 0;
-      const unidad = document.getElementById('ejercicio-unidad').value;
-      
-      let minutos = tiempo;
-      if (unidad === 'horas') {
-        minutos = tiempo * 60;
-      }
-      
-      if (minutos > 0) {
-        completeMission('ejercicio', minutos);
-        showToast(`¡Ejercicio registrado! +${minutos} minutos`, 'success');
-      }
-    }
-
-    function registrarEstudio() {
-      const teoria = parseInt(document.getElementById('teoria-cantidad').value) || 0;
-      const practica = parseInt(document.getElementById('practica-cantidad').value) || 0;
-      const unidadTeoria = document.getElementById('teoria-unidad').value;
-      const unidadPractica = document.getElementById('practica-unidad').value;
-      
-      // Convertir a minutos (simplificado)
-      let minutos = 0;
-      
-      if (unidadTeoria === 'minutos') minutos += teoria;
-      else if (unidadTeoria === 'horas') minutos += teoria * 60;
-      // Para días, semanas y años, asumimos un valor fijo por simplicidad
-      else if (unidadTeoria === 'dias') minutos += teoria * 60; // 1 hora por día
-      else if (unidadTeoria === 'semanas') minutos += teoria * 300; // 5 horas por semana
-      else if (unidadTeoria === 'años') minutos += teoria * 1560; // 26 horas por año
-      
-      if (unidadPractica === 'minutos') minutos += practica;
-      else if (unidadPractica === 'horas') minutos += practica * 60;
-      else if (unidadPractica === 'dias') minutos += practica * 60;
-      else if (unidadPractica === 'semanas') minutos += practica * 300;
-      else if (unidadPractica === 'años') minutos += practica * 1560;
-      
-      if (minutos > 0) {
-        completeMission('estudio', minutos);
-        showToast(`¡Estudio registrado! +${minutos} minutos`, 'success');
-      }
-    }
-
-    // Inicializar cuando se carga la página
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeStreakSystem();
-      
-      // Cargar estadísticas guardadas
-      ['poder', 'conocimiento', 'influencia', 'dragmas'].forEach(stat => {
-        const savedValue = localStorage.getItem(stat);
-        if (savedValue) {
-          const element = document.getElementById(stat + '-count');
-          if (element) element.textContent = savedValue;
-        }
-      });
-    });
-  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
